@@ -393,12 +393,12 @@ export const ATGT_CURRICULUM_DATA: Record<Grade, AtgtLesson[]> = {
   5: [
     {
       lessonNumber: 1,
-      title: "Bài 1: Nhớ quy tắc giao thông đường bộ và xây dựng văn hóa giao thông",
-      topicShort: "Quy tắc cốt lõi và văn hóa tham gia giao thông",
+      title: "Bài 1: Đi xe đạp an toàn",
+      topicShort: "Đi xe đạp an toàn",
       grade: 5,
-      objective: "Khắc sâu toàn bộ quy tắc giao thông đường bộ cốt lõi; rèn luyện ý thức tự giác chấp hành pháp luật, tinh thần trách nhiệm của học sinh cuối cấp tiểu học.",
-      teacherGuide: "Hệ thống hóa các quy định của Luật Giao thông đường bộ liên quan trực tiếp đến lứa tuổi học sinh: Đi bộ, đi xe đạp, đội mũ bảo hiểm và ứng xử văn minh nơi công cộng.",
-      studentPractice: "Thảo luận nhóm, viết bảng cam kết thực hiện nghiêm túc 5 quy tắc an toàn giao thông của học sinh lớp 5."
+      objective: "Hiểu và thực hành thành thạo các quy tắc an toàn khi đi xe đạp và kỹ năng chuyển hướng (rẽ trái, rẽ phải, quay đầu): giảm tốc độ, quan sát kỹ trước sau, đưa tay phát tín hiệu xin đường và chỉ chuyển hướng khi thật an toàn.",
+      teacherGuide: "Hướng dẫn quy tắc đi xe đạp an toàn và quy trình 4 bước chuyển hướng xe đạp an toàn: 1. Giảm tốc độ; 2. Quan sát gương/quay đầu quan sát an toàn; 3. Đưa tay phát tín hiệu xin chuyển hướng; 4. Chuyển hướng từ từ dứt khoát, tuyệt đối không rẽ đột ngột cắt đầu xe lớn.",
+      studentPractice: "Thực hành trên mô hình hoặc sân trường: Đi xe đạp, thực hiện động tác đưa tay xin đường rẽ trái, rẽ phải; ghi nhớ tuyệt đối không rẽ ngoặt bất ngờ trước đầu xe cơ giới."
     },
     {
       lessonNumber: 2,
@@ -484,32 +484,60 @@ export const ATGT_CURRICULUM_DATA: Record<Grade, AtgtLesson[]> = {
   ]
 };
 
+export interface AtgtLessonWithPeriod extends AtgtLesson {
+  periodInLesson: 1 | 2;
+  isStarted: boolean;
+}
+
 /**
  * Lấy bài học An toàn giao thông tương ứng theo Khối và Tuần học
- * Mỗi khối có 10 bài, 1 bài dạy tích hợp vào tiết HĐTN (SHL) trong 2 tuần liên tiếp (2 tiết/bài)
- * Tuần 1-2: Bài 1
- * Tuần 3-4: Bài 2 (Ví dụ Lớp 5 Tuần 3: Bài 2 Phòng tránh tai nạn nơi tầm nhìn bị che khuất)
- * Tuần 5-6: Bài 3
- * ...
- * Tuần 19-20: Bài 10
- * Tuần 21+: Ôn tập & thực hành xoay vòng các bài ATGT tương ứng
+ * Yêu cầu:
+ * - Khối 5 (Lớp 5 Thầy Tuấn): Bắt đầu vào Tuần 3 với Bài 1: Đi xe đạp an toàn.
+ * - Mỗi bài an toàn giao thông dạy 2 tiết ở mỗi lớp (mỗi bài dạy trong 2 tuần liên tiếp, mỗi tuần 1 tiết).
+ *   + Khối 5: Tuần 3-4 dạy Bài 1 (Tuần 3: Tiết 1, Tuần 4: Tiết 2).
+ *   + Khối 5: Tuần 5-6 dạy Bài 2 (Tuần 5: Tiết 1, Tuần 6: Tiết 2)...
+ *   + Các khối 1-4: Mỗi bài dạy 2 tiết (Tuần 1-2: Bài 1, Tuần 3-4: Bài 2...).
  */
-export function getAtgtLessonForWeek(grade: Grade, week: number): AtgtLesson {
+export function getAtgtLessonForWeek(grade: Grade, week: number): AtgtLessonWithPeriod {
   const g = (grade >= 1 && grade <= 5 ? grade : 5) as Grade;
   const lessons = ATGT_CURRICULUM_DATA[g];
-  
-  // Xác định số thứ tự bài học (1 đến 10) dựa trên tuần (2 tuần 1 bài)
-  const lessonIdx = Math.floor(((week - 1) % 20) / 2); // 0 đến 9
-  return lessons[lessonIdx] || lessons[0];
+
+  // Khối 5 (Lớp 5 Thầy Tuấn): Bắt đầu vào tuần 3
+  if (Number(g) === 5) {
+    if (week < 3) {
+      return {
+        ...lessons[0],
+        periodInLesson: 1,
+        isStarted: false
+      };
+    }
+    const offset = week - 3; // tuần 3 -> 0, tuần 4 -> 1, tuần 5 -> 2...
+    const lessonIdx = Math.floor(offset / 2) % lessons.length;
+    const periodInLesson = ((offset % 2) + 1) as 1 | 2;
+    return {
+      ...(lessons[lessonIdx] || lessons[0]),
+      periodInLesson,
+      isStarted: true
+    };
+  }
+
+  // Các khối khác (Khối 1, 2, 3, 4): Mỗi bài dạy 2 tiết
+  const lessonIdx = Math.floor(((week - 1) % 20) / 2);
+  const periodInLesson = (((week - 1) % 2) + 1) as 1 | 2;
+  return {
+    ...(lessons[lessonIdx] || lessons[0]),
+    periodInLesson,
+    isStarted: true
+  };
 }
 
 /**
  * Lấy tên đầy đủ bài Sinh hoạt lớp tích hợp ATGT cho Lịch báo giảng
- * Ví dụ Tuần 3 Lớp 5: Sinh hoạt lớp: CÂN BẰNG CẢM XÚC & AN TOÀN GIAO THÔNG (Phòng tránh tai nạn nơi tầm nhìn bị che khuất)
+ * Ví dụ Tuần 3 Lớp 5: Sinh hoạt lớp: CÂN BẰNG CẢM XÚC & AN TOÀN GIAO THÔNG (Đi xe đạp an toàn - Tiết 1)
  */
 export function getShlAtgtLessonTitleForLbg(grade: Grade, week: number): string {
   const atgt = getAtgtLessonForWeek(grade, week);
-  
+
   // Chủ đề chính của tiết sinh hoạt lớp theo tuần
   const shlThemes: Record<number, string> = {
     1: "CHÀO NĂM HỌC MỚI",
@@ -531,16 +559,22 @@ export function getShlAtgtLessonTitleForLbg(grade: Grade, week: number): string 
     17: "SƠ KẾT HỌC KÌ I",
     18: "KẾ HOẠCH NĂM MỚI"
   };
-  
+
   const theme = shlThemes[week] || (week % 2 === 1 ? "CÂN BẰNG CẢM XÚC" : "RÈN LUYỆN NỀ NẾP");
-  return `Sinh hoạt lớp: ${theme} & AN TOÀN GIAO THÔNG (${atgt.topicShort})`;
+
+  if (Number(grade) === 5 && week < 3) {
+    return `Sinh hoạt lớp: ${theme}`;
+  }
+
+  return `Sinh hoạt lớp: ${theme} & AN TOÀN GIAO THÔNG (BÀI ${atgt.lessonNumber}: ${atgt.topicShort.toUpperCase()} - TIẾT ${atgt.periodInLesson})`;
 }
 
 /**
  * Lấy tiêu đề trọn vẹn trong KHBD (bỏ chữ môn, chỉ ghi trọn vẹn tên bài học viết hoa in đậm)
- * Ví dụ: SINH HOẠT LỚP: CÂN BẰNG CẢM XÚC & AN TOÀN GIAO THÔNG
+ * Ví dụ: SINH HOẠT LỚP: CÂN BẰNG CẢM XÚC & AN TOÀN GIAO THÔNG (BÀI 1: ĐI XE ĐẠP AN TOÀN - TIẾT 1)
  */
 export function getShlAtgtLessonTitleForKhbd(grade: Grade, week: number): string {
+  const atgt = getAtgtLessonForWeek(grade, week);
   const shlThemes: Record<number, string> = {
     1: "CHÀO NĂM HỌC MỚI",
     2: "NỀ NẾP LỚP HỌC",
@@ -562,5 +596,8 @@ export function getShlAtgtLessonTitleForKhbd(grade: Grade, week: number): string
     18: "KẾ HOẠCH NĂM MỚI"
   };
   const theme = shlThemes[week] || (week % 2 === 1 ? "CÂN BẰNG CẢM XÚC" : "RÈN LUYỆN NỀ NẾP");
-  return `SINH HOẠT LỚP: ${theme} & AN TOÀN GIAO THÔNG`;
+  if (Number(grade) === 5 && week < 3) {
+    return `SINH HOẠT LỚP: ${theme}`;
+  }
+  return `SINH HOẠT LỚP: ${theme} & AN TOÀN GIAO THÔNG (BÀI ${atgt.lessonNumber}: ${atgt.topicShort.toUpperCase()} - TIẾT ${atgt.periodInLesson})`;
 }

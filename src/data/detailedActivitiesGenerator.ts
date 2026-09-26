@@ -43,6 +43,7 @@ export function getDetailedLessonActivities(params: {
     activities: (res.activities || []).map((a) => ({
       ...a,
       name: normalizeActivityName(a.name),
+      objective: "", // Bỏ mục tiêu riêng trong từng hoạt động theo yêu cầu, chỉ ghi mục tiêu chung
     })),
   };
 }
@@ -879,54 +880,63 @@ function getRawDetailedLessonActivities(params: {
     if (isPeriod3) {
       // Tiết 3: Sinh hoạt lớp (Tích hợp An toàn giao thông theo mẫu mới của Bộ GD&ĐT)
       const atgt = getAtgtLessonForWeek(grade, week);
+      const isAtgtActive = atgt.isStarted;
+      const atgtLabel = isAtgtActive ? `Bài ${atgt.lessonNumber}: ${atgt.topicShort} - Tiết ${atgt.periodInLesson}` : "";
+      
       const specificCompetencies = [
         "Học sinh biết tự đánh giá và đánh giá các mặt hoạt động học tập, rèn luyện của bản thân và các bạn trong tuần qua.",
         `Rèn luyện năng lực tự quản, tự tin phát biểu ý kiến, thống nhất phương hướng tuần tới và tham gia sinh hoạt theo chủ đề: "${lessonTitle}".`,
-        `Tích hợp Giáo dục An toàn giao thông: ${atgt.objective}`
+        ...(isAtgtActive ? [`Tích hợp Giáo dục An toàn giao thông (${atgtLabel}): ${atgt.objective}`] : [])
       ];
       const teacherMaterials = [
         "Sổ chủ nhiệm, bảng tổng hợp điểm thi đua các tổ trong tuần, kế hoạch tuần học tiếp theo.",
-        `Tài liệu Giáo dục An toàn giao thông Lớp ${grade}: Tranh ảnh và quy tắc an toàn "${atgt.title}".`
+        ...(isAtgtActive ? [`Tài liệu Giáo dục An toàn giao thông Lớp ${grade}: Tranh ảnh và quy tắc an toàn "${atgt.title} (Tiết ${atgt.periodInLesson})".`] : [])
       ];
       const studentMaterials = [
         "Sổ theo dõi của ban cán sự lớp, sổ tay cá nhân, phiếu tự đánh giá rèn luyện.",
-        "Sách/tài liệu Giáo dục An toàn giao thông tiểu học."
+        ...(isAtgtActive ? ["Sách/tài liệu Giáo dục An toàn giao thông tiểu học."] : [])
       ];
 
       const activities: LessonActivity[] = [
         {
           name: "1. Hoạt động mở đầu (5 phút)",
-          objective: "Tạo không khí vui tươi, gắn kết tập thể lớp cuối tuần.",
+          objective: "",
           teacherActivity: `• Bắt nhịp bài hát tập thể vui nhộn (Ví dụ: "Chúng em với an toàn giao thông" hoặc bài hát lớp yêu thích) tạo không khí cởi mở, ấm áp cuối tuần.`,
           studentActivity: `• Cả lớp cùng hát vang và vỗ tay theo nhịp bài hát, tạo tinh thần thoải mái, hào hứng bước vào buổi sinh hoạt.`
         },
         {
-          name: `2. Hình thành kiến thức mới - Sơ kết tuần & Tích hợp An toàn giao thông (15 phút)`,
-          objective: `Đánh giá nề nếp tuần qua và tiếp thu nội dung ${atgt.title} (${atgt.topicShort}).`,
+          name: isAtgtActive 
+            ? `2. Hình thành kiến thức mới - Sơ kết tuần & Tích hợp An toàn giao thông (${atgtLabel}) (15 phút)`
+            : `2. Hình thành kiến thức mới - Sơ kết tuần & Sinh hoạt chủ đề (15 phút)`,
+          objective: "",
           teacherActivity: `• Phần 1: Điều hành sơ kết hoạt động tuần qua:
 - Mời Ban cán sự lớp (Lớp trưởng, Tổ trưởng) báo cáo tình hình học tập, nề nếp và thực hiện phong trào thi đua.
 - GVCN nhận xét toàn diện: Khen ngợi cá nhân và tổ có tiến bộ vượt bậc; nhắc nhở nhẹ nhàng những điểm còn tồn tại.
-• Phần 2: Tích hợp nội dung Giáo dục An toàn giao thông (${atgt.title}):
-- ${atgt.teacherGuide}`,
+• Phần 2: ${isAtgtActive ? `Tích hợp nội dung Giáo dục An toàn giao thông (${atgt.title} - Tiết ${atgt.periodInLesson}):\n- ${atgt.teacherGuide}` : `Tổ chức sinh hoạt chuyên đề theo chủ điểm tuần.`}`,
           studentActivity: `• Ban cán sự lớp lần lượt đọc bảng tổng kết thi đua của tổ, nhận xét chung toàn lớp.
 • Cả lớp lắng nghe, tự đối chiếu với bản thân và vỗ tay chúc mừng các bạn được tuyên dương.
-• Tiếp thu nội dung bài học An toàn giao thông:
-- ${atgt.studentPractice}`
+${isAtgtActive ? `• Tiếp thu nội dung bài học An toàn giao thông (${atgtLabel}):\n- ${atgt.studentPractice}` : `• Tích cực phát biểu đóng góp xây dựng phương hướng cho tuần tiếp theo.`}`
         },
         {
           name: "3. Luyện tập - Thực hành (10 đến 12 phút)",
-          objective: `Thực hành tình huống và củng cố kiến thức an toàn giao thông: ${atgt.topicShort}.`,
-          teacherActivity: `• Tổ chức cho học sinh thảo luận cặp đôi hoặc theo tổ:
-- Đưa ra 2 tình huống thực tế thường gặp khi tham gia giao thông liên quan đến "${atgt.topicShort}".
+          objective: "",
+          teacherActivity: isAtgtActive 
+            ? `• Tổ chức cho học sinh thảo luận cặp đôi hoặc theo tổ:
+- Đưa ra 2 tình huống thực tế thường gặp khi tham gia giao thông liên quan đến "${atgt.topicShort}":
+  + Tình huống 1: Em đang đi xe đạp thì gặp khúc cua khuất tầm nhìn hoặc muốn rẽ trái vào ngõ. Em cần thực hiện các thao tác nào theo đúng quy trình 4 bước?
+  + Tình huống 2: Bạn cùng lớp rủ em đi xe đạp dàn hàng ba và vừa đi vừa đùa nghịch. Em sẽ ứng xử thế nào?
 - Yêu cầu học sinh thảo luận: "Nếu gặp tình huống này, em sẽ xử lý như thế nào để đảm bảo an toàn tuyệt đối cho mình và mọi người?"
-• Mời 2 đại diện nhóm trình bày cách xử lý; GV nhận xét và chốt phương án an toàn nhất.`,
-          studentActivity: `• Các tổ tích cực trao đổi, phân tích tình huống giao thông thực tế.
-• Đại diện nhóm tự tin nêu cách giải quyết tình huống an toàn, đúng luật.
+• Mời 2 đại diện nhóm trình bày cách xử lý; GV nhận xét và chốt phương án an toàn nhất.`
+            : `• Tổ chức cho học sinh thảo luận theo tổ về giải pháp rèn luyện nề nếp và học tập cho tuần tiếp theo.`,
+          studentActivity: isAtgtActive
+            ? `• Các tổ tích cực trao đổi, phân tích tình huống giao thông thực tế.
+• Đại diện nhóm tự tin nêu cách giải quyết tình huống an toàn, đúng luật: Luôn quan sát, giảm tốc độ và phát tín hiệu xin đường rõ ràng.
 • Cả lớp lắng nghe, nhận xét và ghi nhớ quy tắc tham gia giao thông an toàn.`
+            : `• Các tổ thảo luận sôi nổi và đăng ký chỉ tiêu thi đua tuần tới.`
         },
         {
           name: "4. Vận dụng & trải nghiệm (3 đến 5 phút)",
-          objective: "Xác định rõ các phương hướng tuần mới và cam kết chấp hành nghiêm chỉnh luật an toàn giao thông.",
+          objective: "",
           teacherActivity: `• Phổ biến phương hướng tuần tới: Nêu các chỉ tiêu thi đua cần đạt của lớp trong tuần tiếp theo.
 • Cam kết an toàn giao thông: Nhắc nhở học sinh luôn tuân thủ luật an toàn giao thông trên đường từ nhà đến trường và từ trường về nhà.`,
           studentActivity: `• Ghi chép phương hướng tuần mới vào sổ tay.

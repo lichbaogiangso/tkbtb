@@ -3,6 +3,7 @@ import { getDetailedMusicLesson } from "./musicLessonDetails";
 import { getDetailedEnglishLesson } from "./englishLessonDetails";
 import { getDetailedLessonActivities } from "./detailedActivitiesGenerator";
 import { cleanLessonTitle, normalizeActivityName } from "../utils/lessonTitleHelper";
+import { WEEK_3_GRADE_5_PLANS } from "./week3SamplePlans";
 
 export interface SubjectCurriculum {
   subject: string;
@@ -515,10 +516,50 @@ export const SAMPLE_LESSON_PLANS: Record<string, LessonPlan> = {
       }
     ],
     postLessonAdjustment: "..........................................................................................................................................................................."
-  }
+  },
+  // Official full-week detailed plans for Grade 5 Week 3 (priority override)
+  ...WEEK_3_GRADE_5_PLANS,
 };
 
 export const CURRICULUM_GRADES: Grade[] = [1, 2, 3, 4, 5];
+
+/**
+ * Chỉ tích hợp khi KHDH (kế hoạch dạy học / thời khóa biểu) có ghi chú tích hợp cụ thể.
+ * Tuyệt đối không tích hợp đại trà vào các tiết học không được phân công tích hợp.
+ */
+function parseKhdhIntegrations(notes?: string) {
+  if (!notes || !notes.trim()) return undefined;
+  const n = notes.trim();
+  const ints: Record<string, string> = {};
+  if (n.includes("AI")) {
+    ints.ai = n.split("|").find((s) => s.includes("AI"))?.trim() || "Tích hợp AI: Làm quen ứng dụng công nghệ trí tuệ nhân tạo hỗ trợ học tập.";
+  }
+  if (n.includes("NLS")) {
+    ints.digitalCompetence = n.split("|").find((s) => s.includes("NLS"))?.trim() || "Tích hợp Năng lực số (CV 3456/BGDĐT-GDTH): Khám phá và sử dụng công nghệ số an toàn.";
+  }
+  if (n.includes("QCN")) {
+    ints.humanRights = n.split("|").find((s) => s.includes("QCN"))?.trim() || "Giáo dục quyền trẻ em (QCN): Tôn trọng sự khác biệt, bình đẳng và an toàn thân thể.";
+  }
+  if (n.includes("GDQPAN") || n.toLowerCase().includes("quốc phòng")) {
+    ints.defense = n.split("|").find((s) => s.includes("GDQPAN") || s.toLowerCase().includes("quốc phòng"))?.trim() || "Lồng ghép GDQPAN (TT 08/2024): Tự hào truyền thống yêu nước, ý thức bảo vệ chủ quyền quê hương.";
+  }
+  if (n.includes("GDDD")) {
+    ints.nutrition = n.split("|").find((s) => s.includes("GDDD"))?.trim() || "Giáo dục Dinh dưỡng học đường (GDDD): Lựa chọn thực phẩm lành mạnh, giữ gìn sức khỏe.";
+  }
+  if (n.includes("STEM")) {
+    ints.stem = n.split("|").find((s) => s.includes("STEM"))?.trim() || "Giáo dục STEM / Học thông qua chơi: Vận dụng kiến thức liên môn giải quyết vấn đề thực tiễn.";
+  }
+  if (n.includes("ATGT") || n.toLowerCase().includes("giao thông")) {
+    (ints as any).trafficSafety = n.split("|").find((s) => s.includes("ATGT") || s.toLowerCase().includes("giao thông"))?.trim() || "Tích hợp Giáo dục An toàn giao thông.";
+  }
+  if (n.includes("KNS") || n.toLowerCase().includes("kỹ năng sống")) {
+    (ints as any).lifeSkills = n.split("|").find((s) => s.includes("KNS") || s.toLowerCase().includes("kỹ năng sống"))?.trim() || "Tích hợp Giáo dục Kỹ năng sống.";
+  }
+  if (n.includes("BVMT") || n.toLowerCase().includes("môi trường")) {
+    (ints as any).environment = n.split("|").find((s) => s.includes("BVMT") || s.toLowerCase().includes("môi trường"))?.trim() || "Tích hợp Giáo dục Bảo vệ môi trường.";
+  }
+  return Object.keys(ints).length > 0 ? ints : undefined;
+}
 
 /**
  * Generate full week Lesson Plans (KHBD) for all items in the schedule
@@ -603,7 +644,14 @@ export function generateFullWeekLessonPlans(
       const subMatches = normSub.includes(spSub) || 
                          spSub.includes(normSub.replace(/\s*\d+$/, "")) ||
                          (normSub.includes("hđtn") && spSub.includes("trải nghiệm")) ||
-                         (normSub.includes("trải nghiệm") && spSub.includes("hđtn"));
+                         (normSub.includes("trải nghiệm") && spSub.includes("hđtn")) ||
+                         (normSub.includes("hđtn") && spSub.includes("hđtn")) ||
+                         (normSub.includes("lịch sử") && spSub.includes("lịch sử")) ||
+                         (normSub.includes("khoa học") && spSub.includes("khoa học")) ||
+                         (normSub.includes("đạo đức") && spSub.includes("đạo đức")) ||
+                         (normSub.includes("toán") && spSub.includes("toán")) ||
+                         (normSub.includes("tiếng việt") && spSub.includes("tiếng việt")) ||
+                         (normSub.includes("tctv") && (spSub.includes("tiếng việt") || spSub.includes("tctv")));
       if (!subMatches) return false;
       return (
         sp.curriculumPeriod === item.curriculumPeriod ||
@@ -633,6 +681,7 @@ export function generateFullWeekLessonPlans(
         activities: (sp.activities || []).map((act) => ({
           ...act,
           name: normalizeActivityName(act.name),
+          objective: "", // Bỏ mục tiêu riêng trong từng hoạt động theo yêu cầu người dùng
         })),
       });
       return;
@@ -747,26 +796,7 @@ export function generateFullWeekLessonPlans(
           "Chăm chỉ, trung thực: Cần cù trong học tập, trung thực trong làm bài và sinh hoạt lớp.",
           "Trách nhiệm: Có ý thức bảo vệ của công, giữ gìn vệ sinh chung và bảo vệ môi trường sống."
         ],
-        integrations: {
-          ai: item.integrationNotes?.includes("AI") 
-            ? (item.integrationNotes.split("|").find(s => s.includes("AI"))?.trim() || "Tích hợp AI: Làm quen ứng dụng công nghệ trí tuệ nhân tạo hỗ trợ học tập.")
-            : undefined,
-          digitalCompetence: item.integrationNotes?.includes("NLS") 
-            ? (item.integrationNotes.split("|").find(s => s.includes("NLS"))?.trim() || "Tích hợp Năng lực số (CV 3456/BGDĐT-GDTH): Khám phá và sử dụng công nghệ số an toàn.")
-            : undefined,
-          humanRights: item.integrationNotes?.includes("QCN") 
-            ? (item.integrationNotes.split("|").find(s => s.includes("QCN"))?.trim() || "Giáo dục quyền trẻ em (QCN): Tôn trọng sự khác biệt, bình đẳng và an toàn thân thể.")
-            : undefined,
-          defense: (item.integrationNotes?.includes("GDQPAN") || item.integrationNotes?.includes("quốc phòng")) 
-            ? (item.integrationNotes.split("|").find(s => s.includes("GDQPAN") || s.includes("quốc phòng"))?.trim() || "Lồng ghép GDQPAN (TT 08/2024): Tự hào truyền thống yêu nước, ý thức bảo vệ chủ quyền quê hương.")
-            : undefined,
-          nutrition: item.integrationNotes?.includes("GDDD") 
-            ? (item.integrationNotes.split("|").find(s => s.includes("GDDD"))?.trim() || "Giáo dục Dinh dưỡng học đường (GDDD): Lựa chọn thực phẩm lành mạnh, giữ gìn sức khỏe.")
-            : undefined,
-          stem: item.integrationNotes?.includes("STEM") 
-            ? (item.integrationNotes.split("|").find(s => s.includes("STEM"))?.trim() || "Giáo dục STEM / Học thông qua chơi: Vận dụng kiến thức liên môn giải quyết vấn đề thực tiễn.")
-            : undefined,
-        }
+        integrations: parseKhdhIntegrations(item.integrationNotes)
       },
       materials: {
         teacher: teacherMaterials,
@@ -775,25 +805,25 @@ export function generateFullWeekLessonPlans(
       activities: [
         {
           name: englishDetail ? "1. Hoạt động mở đầu (Warm-up)" : "1. Hoạt động mở đầu",
-          objective: englishDetail ? englishDetail.activities[0].objective : "Tạo tâm thế hứng khởi, kích hoạt kiến thức nền tảng và kết nối vào bài mới.",
+          objective: "",
           teacherActivity: act1Teacher,
           studentActivity: act1Student
         },
         {
           name: englishDetail ? "2. Hình thành kiến thức mới (Presentation)" : "2. Hình thành kiến thức mới",
-          objective: englishDetail ? englishDetail.activities[1].objective : "Hình thành kiến thức mới và các kỹ năng trọng tâm của bài học.",
+          objective: "",
           teacherActivity: act2Teacher,
           studentActivity: act2Student
         },
         {
           name: englishDetail ? "3. Luyện tập - Thực hành (Practice)" : "3. Luyện tập - Thực hành",
-          objective: englishDetail ? englishDetail.activities[2].objective : "Củng cố và rèn luyện kỹ năng qua các bài tập và tình huống vận dụng.",
+          objective: "",
           teacherActivity: act3Teacher,
           studentActivity: act3Student
         },
         {
           name: englishDetail ? "4. Vận dụng & trải nghiệm (Production)" : "4. Vận dụng & trải nghiệm",
-          objective: englishDetail ? englishDetail.activities[3].objective : "Khắc sâu kiến thức, liên hệ thực tiễn đời sống và củng cố nội dung tích hợp.",
+          objective: "",
           teacherActivity: act4Teacher,
           studentActivity: act4Student
         }

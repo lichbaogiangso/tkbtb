@@ -502,9 +502,9 @@ export const GRADE_5_HDTN: Record<number, Array<{ title: string; period: number;
     { title: "Sinh hoạt lớp: TIẾN BỘ TRONG VIỆC NHÀ", period: 6 }
   ],
   3: [
-    { title: "Sinh hoạt dưới cờ: HOẠT ĐỘNG VUI TRUNG THU", period: 7 },
-    { title: "HĐGDCĐ: NIỀM VUI NHÂN ĐÔI, NỖI BUỒN CHIA NỬA", period: 8 },
-    { title: "Sinh hoạt lớp: CÂN BẰNG CẢM XÚC", period: 9 }
+    { title: "Sinh hoạt dưới cờ: NIỀM VUI NHÂN ĐÔI, NỖI BUỒN CHIA NỬA", period: 7 },
+    { title: "HĐGDCĐ: NIỀM VUI NHÂN ĐÔI, NỖI BUỒN CHIA NỬA (Tiếp theo)", period: 8 },
+    { title: "Sinh hoạt lớp: CÂN BẰNG CẢM XÚC & AN TOÀN GIAO THÔNG", period: 9 }
   ],
   4: [
     { title: "Sinh hoạt dưới cờ: THỰC HÀNH CÂN BẰNG CẢM XÚC", period: 10, integ: "KNS: Phương pháp hít thở sâu, giữ bình tĩnh khi tức giận." },

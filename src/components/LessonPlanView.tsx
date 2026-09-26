@@ -36,7 +36,7 @@ import {
   isAuthenticLectureAvailable,
   getAuthenticDeckSummary
 } from "../utils/classroomSlideDataHelper";
-import { cleanLessonTitle, normalizeActivityName } from "../utils/lessonTitleHelper";
+import { cleanLessonTitle, normalizeActivityName, cleanSubjectName } from "../utils/lessonTitleHelper";
 
 interface LessonPlanViewProps {
   lessonPlans: LessonPlan[];
@@ -473,6 +473,9 @@ export const LessonPlanView: React.FC<LessonPlanViewProps> = ({
                         {/* Period Bar with Pure Lesson Title */}
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-black pb-2">
                           <div className="flex items-center gap-2 flex-wrap">
+                            <span className="text-xs bg-blue-100 text-blue-900 font-black border border-blue-400 px-2 py-0.5 uppercase tracking-wide">
+                              {cleanSubjectName(plan.subject)}
+                            </span>
                             <span className="font-extrabold text-sm text-black uppercase tracking-wide">
                               {cleanLessonTitle(plan.lessonTitle).toUpperCase()}
                             </span>
@@ -525,7 +528,7 @@ export const LessonPlanView: React.FC<LessonPlanViewProps> = ({
                               </div>
                             )}
 
-                            {plan.objectives?.integrations && (
+                            {Boolean(plan.objectives?.integrations && Object.values(plan.objectives.integrations).some(v => typeof v === 'string' && v.trim().length > 0)) && (
                               <div className="flex flex-wrap gap-1.5 pt-1">
                                 {plan.objectives.integrations.ai && (
                                   <span className="px-1.5 py-0.5 bg-blue-50 text-blue-900 text-[10px] border border-blue-200 font-sans">
@@ -588,11 +591,6 @@ export const LessonPlanView: React.FC<LessonPlanViewProps> = ({
                                     <div className="font-bold text-black text-xs uppercase">
                                       {normalizeActivityName(act.name)}
                                     </div>
-                                    {act.objective && (
-                                      <div className="text-[11px] text-stone-700 bg-stone-100 p-1.5 border border-stone-300">
-                                        <strong>{isEn ? "* Objective: " : "* Mục tiêu: "}</strong>{act.objective}
-                                      </div>
-                                    )}
                                     <div className="text-stone-900 leading-relaxed whitespace-pre-line text-xs">
                                       <strong>{isEn ? "* Procedure: " : "* Cách tiến hành: "}</strong>
                                       <br />
@@ -771,9 +769,14 @@ export const LessonPlanView: React.FC<LessonPlanViewProps> = ({
                   {getDayDisplay(activePlan.dayOfWeek)} ({activePlan.dateStr || schoolInfo.startDate})
                 </p>
                 <div className="flex items-center justify-between flex-wrap gap-2 pt-0.5">
-                  <h3 className="font-extrabold text-black text-base uppercase tracking-tight">
-                    {cleanLessonTitle(activePlan.lessonTitle)}
-                  </h3>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="text-xs bg-blue-100 text-blue-900 font-black border border-blue-400 px-2.5 py-1 uppercase tracking-wider">
+                      {cleanSubjectName(activePlan.subject)}
+                    </span>
+                    <h3 className="font-extrabold text-black text-base uppercase tracking-tight">
+                      {cleanLessonTitle(activePlan.lessonTitle)}
+                    </h3>
+                  </div>
                   <span className="text-xs bg-amber-100 text-amber-950 font-bold border border-amber-300 px-2 py-0.5">
                     {isEn ? "Curriculum Period: " : "Tiết PPCT: "}{activePlan.curriculumPeriod}
                   </span>
@@ -907,31 +910,40 @@ export const LessonPlanView: React.FC<LessonPlanViewProps> = ({
                     </p>
                   </div>
 
-                  {/* 4. Tích hợp lồng ghép */}
-                  {activePlan.objectives.integrations && (
+                  {/* 4. Tích hợp lồng ghép - Chỉ hiển thị khi KHDH có tích hợp, không tích hợp đại trà */}
+                  {Boolean(activePlan.objectives.integrations && Object.values(activePlan.objectives.integrations).some(v => typeof v === 'string' && v.trim().length > 0)) && (
                     <div className="bg-stone-50 p-3.5 border border-black space-y-1.5 mt-2">
                       <h4 className="font-bold text-black flex items-center gap-1.5 uppercase text-[11px] tracking-wide">
                         <Sparkles className="w-3.5 h-3.5 text-black" />
                         {isEn ? "4. Integrated Cross-Curricular Content:" : "4. Nội dung tích hợp lồng ghép trong bài dạy:"}
                       </h4>
                       <ul className="space-y-1 text-xs text-stone-800 pl-4 list-disc">
-                        {activePlan.objectives.integrations.ai && (
+                        {activePlan.objectives.integrations?.ai && (
                           <li><strong>{isEn ? "Artificial Intelligence (AI): " : "Trí tuệ nhân tạo (AI): "}</strong> {activePlan.objectives.integrations.ai}</li>
                         )}
-                        {activePlan.objectives.integrations.digitalCompetence && (
+                        {activePlan.objectives.integrations?.digitalCompetence && (
                           <li><strong>{isEn ? "Digital Competence: " : "Năng lực số (CV 3456/BGDĐT): "}</strong> {activePlan.objectives.integrations.digitalCompetence}</li>
                         )}
-                        {activePlan.objectives.integrations.humanRights && (
+                        {activePlan.objectives.integrations?.humanRights && (
                           <li><strong>{isEn ? "Human Rights Education: " : "Giáo dục Quyền con người: "}</strong> {activePlan.objectives.integrations.humanRights}</li>
                         )}
-                        {activePlan.objectives.integrations.defense && (
+                        {activePlan.objectives.integrations?.defense && (
                           <li><strong>{isEn ? "Defense & Security: " : "GD Quốc phòng & An ninh (TT 08/2024): "}</strong> {activePlan.objectives.integrations.defense}</li>
                         )}
-                        {activePlan.objectives.integrations.nutrition && (
+                        {activePlan.objectives.integrations?.nutrition && (
                           <li><strong>{isEn ? "Nutrition Education: " : "Giáo dục Dinh dưỡng: "}</strong> {activePlan.objectives.integrations.nutrition}</li>
                         )}
-                        {activePlan.objectives.integrations.stem && (
+                        {activePlan.objectives.integrations?.stem && (
                           <li><strong>{isEn ? "STEM / Play to Learn: " : "Giáo dục STEM / Chơi để học: "}</strong> {activePlan.objectives.integrations.stem}</li>
+                        )}
+                        {(activePlan.objectives.integrations as any)?.trafficSafety && (
+                          <li><strong>{isEn ? "Traffic Safety: " : "An toàn giao thông: "}</strong> {(activePlan.objectives.integrations as any).trafficSafety}</li>
+                        )}
+                        {(activePlan.objectives.integrations as any)?.lifeSkills && (
+                          <li><strong>{isEn ? "Life Skills: " : "Kỹ năng sống: "}</strong> {(activePlan.objectives.integrations as any).lifeSkills}</li>
+                        )}
+                        {(activePlan.objectives.integrations as any)?.environment && (
+                          <li><strong>{isEn ? "Environment: " : "Bảo vệ môi trường: "}</strong> {(activePlan.objectives.integrations as any).environment}</li>
                         )}
                       </ul>
                     </div>
@@ -1101,16 +1113,6 @@ export const LessonPlanView: React.FC<LessonPlanViewProps> = ({
                                 />
 
                                 <label className="text-[10px] font-bold text-stone-700 uppercase block">
-                                  {isEn ? "Objective:" : "Mục tiêu hoạt động:"}
-                                </label>
-                                <input
-                                  type="text"
-                                  value={act.objective}
-                                  onChange={(e) => handleActivityChange(actIdx, "objective", e.target.value)}
-                                  className="w-full p-1.5 border border-stone-400 text-xs font-serif bg-stone-50"
-                                />
-
-                                <label className="text-[10px] font-bold text-stone-700 uppercase block">
                                   {isEn ? "Teacher's Procedure:" : "Cách tiến hành của giáo viên:"}
                                 </label>
                                 <textarea
@@ -1124,9 +1126,6 @@ export const LessonPlanView: React.FC<LessonPlanViewProps> = ({
                               <>
                                 <div className="font-bold text-black text-xs uppercase">
                                   {normalizeActivityName(act.name)}
-                                </div>
-                                <div className="text-xs text-stone-700 bg-stone-100 p-2 border border-stone-300">
-                                  <strong>{isEn ? "* Objective: " : "* Mục tiêu: "}</strong>{act.objective}
                                 </div>
                                 <div className="text-stone-900 leading-relaxed whitespace-pre-line text-xs">
                                   <strong>{isEn ? "* Procedure: " : "* Cách tiến hành: "}</strong>

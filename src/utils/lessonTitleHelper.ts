@@ -40,7 +40,55 @@ export function cleanLessonTitle(title: string | undefined | null): string {
   res = res.replace(/\s{2,}/g, " ").trim();
   res = res.replace(/^[-–:,\s]+/, "").replace(/[-–:,\s]+$/, "").trim();
 
+  // 5. Chuẩn hóa tên bài HĐTN theo yêu cầu: HĐTN - SHDC: ... và HĐTN - SHL: ...
+  res = res.replace(/^sinh\s+hoạt\s+dưới\s+cờ\s*[:–-]?\s*/i, "HĐTN - SHDC: ");
+  res = res.replace(/^shdc\s*[:–-]?\s*/i, "HĐTN - SHDC: ");
+  res = res.replace(/^hđtn\s*\(shdc\)\s*[:–-]?\s*/i, "HĐTN - SHDC: ");
+  res = res.replace(/^hdtn\s*\(shdc\)\s*[:–-]?\s*/i, "HĐTN - SHDC: ");
+  res = res.replace(/^hđtn\s*\(cc\)\s*[:–-]?\s*/i, "HĐTN - SHDC: ");
+  res = res.replace(/^hđtn\s*[-–]\s*shdc\s*[:–-]?\s*/i, "HĐTN - SHDC: ");
+  res = res.replace(/^hđtn\s*:\s*shdc\s*[:–-]?\s*/i, "HĐTN - SHDC: ");
+
+  res = res.replace(/^sinh\s+hoạt\s+lớp\s*[:–-]?\s*/i, "HĐTN - SHL: ");
+  res = res.replace(/^shl\s*[:–-]?\s*/i, "HĐTN - SHL: ");
+  res = res.replace(/^hđtn\s*\(shl\)\s*[:–-]?\s*/i, "HĐTN - SHL: ");
+  res = res.replace(/^hdtn\s*\(shl\)\s*[:–-]?\s*/i, "HĐTN - SHL: ");
+  res = res.replace(/^hđtn\s*[-–]\s*shl\s*[:–-]?\s*/i, "HĐTN - SHL: ");
+  res = res.replace(/^hđtn\s*:\s*shl\s*[:–-]?\s*/i, "HĐTN - SHL: ");
+
   return res;
+}
+
+/**
+ * Chuẩn hóa tên môn học trong KHBD:
+ * - Ghi "Toán", "Tiếng Việt", "Đạo đức", "Khoa học", "Lịch sử và Địa lí", "HĐTN"...
+ * - Tuyệt đối không ghi chữ "Môn", không ghi "Môn: ...", không ghi số khối lớp ("Toán 5" -> "Toán")
+ */
+export function cleanSubjectName(subject: string | undefined | null): string {
+  if (!subject) return "";
+  let s = subject.trim();
+  // Loại bỏ tiền tố "Môn: ", "Môn ", "môn: ", "môn "
+  s = s.replace(/^môn\s*[:–-]?\s*/i, "");
+  // Loại bỏ số lớp phía sau (Toán 5 -> Toán, Tiếng Việt 5 -> Tiếng Việt)
+  s = s.replace(/\s*[1-5]\b/g, "");
+  s = s.replace(/\s+/g, " ").trim();
+
+  const lower = s.toLowerCase();
+  if (lower === "toán" || lower === "toan" || lower === "t") return "Toán";
+  if (lower === "tiếng việt" || lower === "tieng viet" || lower === "tv") return "Tiếng Việt";
+  if (lower === "đạo đức" || lower === "dao duc" || lower === "đđ" || lower === "dd") return "Đạo đức";
+  if (lower === "khoa học" || lower === "khoa hoc" || lower === "kh") return "Khoa học";
+  if (lower.includes("lịch sử") || lower.includes("địa lí") || lower.includes("địa lý") || lower.includes("ls-đl") || lower.includes("lsđl")) return "Lịch sử và Địa lí";
+  if (lower === "hoạt động trải nghiệm" || lower === "hđtn" || lower === "hdtn") return "HĐTN";
+  if (lower === "tin học" || lower === "th") return "Tin học";
+  if (lower === "công nghệ" || lower === "cn") return "Công nghệ";
+  if (lower === "tiếng anh" || lower === "ta") return "Tiếng Anh";
+  if (lower === "âm nhạc" || lower === "an") return "Âm nhạc";
+  if (lower === "mĩ thuật" || lower === "mt") return "Mĩ thuật";
+  if (lower === "giáo dục thể chất" || lower === "gdtc") return "Giáo dục thể chất";
+  if (lower.includes("kĩ năng sống") || lower.includes("kỹ năng sống") || lower === "kns") return "Kĩ năng sống";
+
+  return s;
 }
 
 /**

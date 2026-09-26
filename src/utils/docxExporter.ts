@@ -16,7 +16,7 @@ import {
 import { saveAs } from "file-saver";
 import { LessonPlan, ScheduleItem, SchoolInfo, MasterTimetable } from "../types";
 import { DAYS_OF_WEEK, DEFAULT_TEACHERS, isSlotMatchingTeacherOrSubject, getWeekDates, getSpecialistTeacherShortName } from "../data/defaultTimetables";
-import { cleanLessonTitle, normalizeActivityName } from "./lessonTitleHelper";
+import { cleanLessonTitle, normalizeActivityName, cleanSubjectName } from "./lessonTitleHelper";
 
 /**
  * Universal robust file download helper for Web & sandboxed iFrame environments
@@ -81,6 +81,11 @@ function createActivityCellParagraphs(
   lines.forEach((line) => {
     const trimmed = line.trim();
     if (!trimmed) {
+      return;
+    }
+
+    // Bỏ mục tiêu riêng trong từng hoạt động theo yêu cầu (chỉ ghi mục tiêu chung)
+    if (/^([*•-]\s*)?((a|b|c|\d+)\)\s*)?mục\s+tiêu\s*:/i.test(trimmed)) {
       return;
     }
 
@@ -1517,11 +1522,25 @@ export async function exportLessonPlansDocx(
       );
     }
 
+    // Tên môn học: Ghi "TOÁN", "TIẾNG VIỆT", "HĐTN"... (KHÔNG ghi chữ "MÔN" hay "Môn:")
+    const cleanSub = cleanSubjectName(plan.subject);
+    if (cleanSub) {
+      docChildren.push(
+        new Paragraph({
+          alignment: AlignmentType.CENTER,
+          spacing: { before: 80, after: 30 },
+          children: [
+            new TextRun({ text: cleanSub.toUpperCase(), bold: true, font, size: baseSize + 2, color: "1E3A8A" }),
+          ],
+        })
+      );
+    }
+
     // Tên tựa bỏ chữ môn chỉ ghi trọn vẹn tên bài học
     docChildren.push(
       new Paragraph({
         alignment: AlignmentType.CENTER,
-        spacing: { before: 80, after: 80 },
+        spacing: { before: 20, after: 80 },
         children: [
           new TextRun({ text: cleanLessonTitle(plan.lessonTitle).toUpperCase(), bold: true, font, size: baseSize + 2 }),
         ],
@@ -1597,6 +1616,7 @@ export async function exportLessonPlansDocx(
       if (ints.stem) intLines.push(`• Tích hợp STEM: ${ints.stem}`);
       if (ints.environment) intLines.push(`• Tích hợp Môi trường: ${ints.environment}`);
       if (ints.lifeSkills) intLines.push(`• Tích hợp Kỹ năng sống: ${ints.lifeSkills}`);
+      if ((ints as any).trafficSafety) intLines.push(`• Tích hợp An toàn giao thông: ${(ints as any).trafficSafety}`);
 
       if (intLines.length > 0) {
         docChildren.push(
@@ -1742,14 +1762,7 @@ export async function exportLessonPlansDocx(
           spacing: { after: 30 },
           children: [new TextRun({ text: normalizeActivityName(act.name), bold: true, color: "1E40AF", font, size: baseSize })],
         }),
-        new Paragraph({
-          spacing: { after: 40 },
-          children: [
-            new TextRun({ text: `- Mục tiêu: `, bold: true, font, size: baseSize }),
-            new TextRun({ text: act.objective, font, size: baseSize }),
-          ],
-        }),
-        ...createActivityCellParagraphs(act.teacherActivity, font, baseSize, "- Cách tiến hành:")
+        ...createActivityCellParagraphs(act.teacherActivity, font, baseSize)
       ];
 
       const studentParagraphs: Paragraph[] = [
@@ -2024,11 +2037,25 @@ export async function exportCombinedAllInOneDocx(
       );
     }
 
+    // Tên môn học: Ghi "TOÁN", "TIẾNG VIỆT", "HĐTN"... (KHÔNG ghi chữ "MÔN" hay "Môn:")
+    const cleanSub2 = cleanSubjectName(plan.subject);
+    if (cleanSub2) {
+      docChildren.push(
+        new Paragraph({
+          alignment: AlignmentType.CENTER,
+          spacing: { before: 80, after: 30 },
+          children: [
+            new TextRun({ text: cleanSub2.toUpperCase(), bold: true, font, size: baseSize + 2, color: "1E3A8A" }),
+          ],
+        })
+      );
+    }
+
     // Tên tựa bỏ chữ môn chỉ ghi trọn vẹn tên bài học
     docChildren.push(
       new Paragraph({
         alignment: AlignmentType.CENTER,
-        spacing: { before: 80, after: 80 },
+        spacing: { before: 20, after: 80 },
         children: [
           new TextRun({ text: cleanLessonTitle(plan.lessonTitle).toUpperCase(), bold: true, font, size: baseSize + 2 }),
         ],
@@ -2097,6 +2124,7 @@ export async function exportCombinedAllInOneDocx(
       if (ints.stem) intLines.push(`• Tích hợp STEM: ${ints.stem}`);
       if (ints.environment) intLines.push(`• Tích hợp Môi trường: ${ints.environment}`);
       if (ints.lifeSkills) intLines.push(`• Tích hợp Kỹ năng sống: ${ints.lifeSkills}`);
+      if ((ints as any).trafficSafety) intLines.push(`• Tích hợp An toàn giao thông: ${(ints as any).trafficSafety}`);
       if (intLines.length > 0) {
         docChildren.push(
           new Paragraph({
@@ -2191,14 +2219,7 @@ export async function exportCombinedAllInOneDocx(
           spacing: { after: 30 },
           children: [new TextRun({ text: normalizeActivityName(act.name), bold: true, color: "1E40AF", font, size: baseSize })],
         }),
-        new Paragraph({
-          spacing: { after: 40 },
-          children: [
-            new TextRun({ text: `- Mục tiêu: `, bold: true, font, size: baseSize }),
-            new TextRun({ text: act.objective, font, size: baseSize }),
-          ],
-        }),
-        ...createActivityCellParagraphs(act.teacherActivity, font, baseSize, "- Cách tiến hành:")
+        ...createActivityCellParagraphs(act.teacherActivity, font, baseSize)
       ];
 
       const studentParagraphs: Paragraph[] = [
@@ -2544,11 +2565,25 @@ export async function exportWeeklyKHBDWithLBGFirstPageDocx(
         docChildren.push(new Paragraph({ text: "", spacing: { before: 100 } }));
       }
 
+      // Tên môn học: Ghi "TOÁN", "TIẾNG VIỆT", "HĐTN"... (KHÔNG ghi chữ "MÔN" hay "Môn:")
+      const cleanSub3 = cleanSubjectName(plan.subject);
+      if (cleanSub3) {
+        docChildren.push(
+          new Paragraph({
+            alignment: AlignmentType.CENTER,
+            spacing: { before: 80, after: 30 },
+            children: [
+              new TextRun({ text: cleanSub3.toUpperCase(), bold: true, font, size: baseSize + 2, color: "1E3A8A" }),
+            ],
+          })
+        );
+      }
+
       // Tên tựa bỏ chữ môn chỉ ghi trọn vẹn tên bài học
       docChildren.push(
         new Paragraph({
           alignment: AlignmentType.CENTER,
-          spacing: { before: 80, after: 80 },
+          spacing: { before: 20, after: 80 },
           children: [
             new TextRun({ text: cleanLessonTitle(plan.lessonTitle).toUpperCase(), bold: true, font, size: baseSize + 2 }),
           ],
@@ -2617,6 +2652,7 @@ export async function exportWeeklyKHBDWithLBGFirstPageDocx(
         if (ints.stem) intLines.push(`• Tích hợp STEM: ${ints.stem}`);
         if (ints.environment) intLines.push(`• Tích hợp Môi trường: ${ints.environment}`);
         if (ints.lifeSkills) intLines.push(`• Tích hợp Kỹ năng sống: ${ints.lifeSkills}`);
+        if ((ints as any).trafficSafety) intLines.push(`• Tích hợp An toàn giao thông: ${(ints as any).trafficSafety}`);
         if (intLines.length > 0) {
           docChildren.push(
             new Paragraph({
@@ -2749,14 +2785,7 @@ export async function exportWeeklyKHBDWithLBGFirstPageDocx(
             spacing: { after: 30 },
             children: [new TextRun({ text: normalizeActivityName(act.name), bold: true, color: "1E40AF", font, size: baseSize })],
           }),
-          new Paragraph({
-            spacing: { after: 40 },
-            children: [
-              new TextRun({ text: `- Mục tiêu: `, bold: true, font, size: baseSize }),
-              new TextRun({ text: act.objective, font, size: baseSize }),
-            ],
-          }),
-          ...createActivityCellParagraphs(act.teacherActivity, font, baseSize, "- Cách tiến hành:")
+          ...createActivityCellParagraphs(act.teacherActivity, font, baseSize)
         ];
 
         const studentParagraphs: Paragraph[] = [

@@ -763,7 +763,7 @@ export function mapRawSubjectToScheduleItem(
     const info = getGradeCurriculumLesson(gradeNum, "Tin học", week, pInW);
     lessonTitle = info.lessonTitle;
     curriculumPeriod = info.curriculumPeriod;
-    integrationNotes = info.integrationNotes || "Tích hợp NLS (CV 3456/BGDĐT-GDTH)";
+    integrationNotes = info.integrationNotes || "";
   }
 
   // 4. CÔNG NGHỆ (CN)
@@ -774,7 +774,7 @@ export function mapRawSubjectToScheduleItem(
     const info = getGradeCurriculumLesson(gradeNum, "công nghệ", week, pInW);
     lessonTitle = info.lessonTitle;
     curriculumPeriod = info.curriculumPeriod;
-    integrationNotes = info.integrationNotes || "Tích hợp STEM sáng tạo & Kĩ năng ứng dụng";
+    integrationNotes = info.integrationNotes || "";
   }
 
   // 5. ÂM NHẠC (AN / BDAN)
@@ -799,7 +799,7 @@ export function mapRawSubjectToScheduleItem(
     const info = getGradeCurriculumLesson(gradeNum, "Mĩ thuật", week, pInW);
     lessonTitle = info.lessonTitle;
     curriculumPeriod = info.curriculumPeriod;
-    integrationNotes = info.integrationNotes || "Tích hợp STEM sáng tạo & QCN";
+    integrationNotes = info.integrationNotes || "";
   }
 
   // 7. GIÁO DỤC THỂ CHẤT / THỂ DỤC (GDTC, TD)
@@ -814,7 +814,7 @@ export function mapRawSubjectToScheduleItem(
     const info = getGradeCurriculumLesson(gradeNum, "Giáo dục thể chất", week, pInW);
     lessonTitle = info.lessonTitle;
     curriculumPeriod = info.curriculumPeriod;
-    integrationNotes = info.integrationNotes || "Tích hợp rèn luyện thể lực & tác phong nhanh nhẹn";
+    integrationNotes = info.integrationNotes || "";
   }
 
   // 8. HOẠT ĐỘNG TRẢI NGHIỆM (HĐTN)
@@ -832,11 +832,18 @@ export function mapRawSubjectToScheduleItem(
     subSubject = "Sinh hoạt dưới cờ";
     if (!note) note = "Chào cờ đầu tuần";
     curriculumPeriod = (week - 1) * 3 + 1;
-    if (week === 3 && gradeNum !== 1) {
-      lessonTitle = "Sinh hoạt dưới cờ: HOẠT ĐỘNG VUI TRUNG THU";
+    if (week === 3) {
+      if (gradeNum === 5) {
+        lessonTitle = "HĐTN - SHDC: NIỀM VUI NHÂN ĐÔI, NỖI BUỒN CHIA NỬA";
+      } else if (gradeNum !== 1) {
+        lessonTitle = "HĐTN - SHDC: HOẠT ĐỘNG VUI TRUNG THU";
+      } else {
+        const info = getGradeCurriculumLesson(gradeNum, "hoạt động trải nghiệm", week, 1);
+        lessonTitle = `HĐTN - SHDC: ${info.lessonTitle.replace(/^(sinh hoạt dưới cờ|shdc)[:–-]?\s*/i, "").trim()}`;
+      }
     } else {
       const info = getGradeCurriculumLesson(gradeNum, "hoạt động trải nghiệm", week, 1);
-      lessonTitle = info.lessonTitle;
+      lessonTitle = `HĐTN - SHDC: ${info.lessonTitle.replace(/^(sinh hoạt dưới cờ|shdc)[:–-]?\s*/i, "").trim()}`;
     }
     integrationNotes = "Tích hợp QCN, KNS, Giáo dục truyền thống";
   } 
@@ -852,12 +859,8 @@ export function mapRawSubjectToScheduleItem(
     subSubject = "Sinh hoạt lớp";
     note = "Sinh hoạt cuối tuần";
     curriculumPeriod = (week - 1) * 3 + 3;
-    if (gradeNum === 1) {
-      const info = getGradeCurriculumLesson(gradeNum, "hoạt động trải nghiệm", week, 3);
-      lessonTitle = info.lessonTitle;
-    } else {
-      lessonTitle = getShlAtgtLessonTitleForLbg(gradeNum, week);
-    }
+    const rawTitle = getShlAtgtLessonTitleForLbg(gradeNum, week);
+    lessonTitle = rawTitle.replace(/^sinh hoạt lớp:\s*/i, "HĐTN - SHL: ");
     integrationNotes = "Tích hợp Giáo dục kỹ năng sống, quản lý cảm xúc bản thân và Giáo dục Văn hóa giao thông an toàn.";
   } 
   // 8c. Hoạt động giáo dục theo chủ đề
@@ -869,7 +872,7 @@ export function mapRawSubjectToScheduleItem(
     if (!note && clean.includes("Nhàn")) note = "GV Bộ môn: Thầy Nhàn";
     const info = getGradeCurriculumLesson(gradeNum, "hoạt động trải nghiệm", week, 2);
     lessonTitle = info.lessonTitle;
-    integrationNotes = info.integrationNotes || "Tích hợp KNS & QCN";
+    integrationNotes = info.integrationNotes || "";
   }
 
   // 9. KĨ NĂNG SỐNG (KNS)
@@ -879,7 +882,7 @@ export function mapRawSubjectToScheduleItem(
     const pInW = subjectPeriodInWeek || 1;
     lessonTitle = `Giáo dục Kĩ năng sống tuần ${week}: Kĩ năng tự phục vụ và giao tiếp văn minh`;
     curriculumPeriod = `KNS${pInW}`;
-    integrationNotes = "Tích hợp rèn thói quen tự lập, tôn trọng và hợp tác";
+    integrationNotes = "";
   }
 
   // 10. LỊCH SỬ VÀ ĐỊA LÍ (LS-ĐL, LS, ĐL)
@@ -898,7 +901,7 @@ export function mapRawSubjectToScheduleItem(
     const info = getGradeCurriculumLesson(gradeNum, "lịch sử và địa lí", week, pInW);
     lessonTitle = info.lessonTitle;
     curriculumPeriod = info.curriculumPeriod;
-    integrationNotes = info.integrationNotes || "Giáo dục lòng yêu nước, bảo vệ chủ quyền biên giới & biển đảo";
+    integrationNotes = info.integrationNotes || "";
   }
 
   // 11. TỰ NHIÊN VÀ XÃ HỘI (TNXH)
@@ -915,7 +918,7 @@ export function mapRawSubjectToScheduleItem(
     const info = getGradeCurriculumLesson(gradeNum, "tự nhiên và xã hội", week, pInW);
     lessonTitle = info.lessonTitle;
     curriculumPeriod = info.curriculumPeriod;
-    integrationNotes = info.integrationNotes || "Tích hợp giáo dục môi trường & chăm sóc sức khỏe";
+    integrationNotes = info.integrationNotes || "";
   }
 
   // 12. KHOA HỌC (KH)
@@ -925,7 +928,7 @@ export function mapRawSubjectToScheduleItem(
     const info = getGradeCurriculumLesson(gradeNum, "khoa học", week, pInW);
     lessonTitle = info.lessonTitle;
     curriculumPeriod = info.curriculumPeriod;
-    integrationNotes = info.integrationNotes || "Tích hợp tư duy khoa học thực nghiệm & STEM";
+    integrationNotes = info.integrationNotes || "";
   }
 
   // 13. ĐẠO ĐỨC (ĐĐ)
@@ -937,7 +940,7 @@ export function mapRawSubjectToScheduleItem(
     const info = getGradeCurriculumLesson(gradeNum, "đạo đức", week, pInW);
     lessonTitle = info.lessonTitle;
     curriculumPeriod = info.curriculumPeriod;
-    integrationNotes = info.integrationNotes || "Giáo dục đạo đức & Quyền con người";
+    integrationNotes = info.integrationNotes || "";
   }
 
   // 14. GIÁO DỤC ĐỊA PHƯƠNG (GDĐP)

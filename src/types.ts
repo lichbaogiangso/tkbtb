@@ -65,8 +65,8 @@ export interface ScheduleItem {
 }
 
 export interface LessonActivity {
-  name: string; // 1. Khởi động, 2. Khám phá, 3. Luyện tập, 4. Vận dụng
-  objective: string; // Mục tiêu
+  name: string; // 1. Mở đầu, 2. Hình thành kiến thức mới, 3. Luyện tập - thực hành, 4. Vận dụng & trải nghiệm
+  objective?: string; // Mục tiêu (đã bỏ mục tiêu riêng trong từng hoạt động theo CV 2345 mới, chỉ ghi mục tiêu chung)
   teacherActivity: string; // Hoạt động của giáo viên (cột 1)
   studentActivity: string; // Hoạt động của học sinh (cột 2)
 }
@@ -104,6 +104,7 @@ export interface LessonPlan {
       stem?: string; // Giáo dục STEM / Học thông qua chơi
       environment?: string; // Bảo vệ môi trường
       lifeSkills?: string; // Kỹ năng sống
+      trafficSafety?: string; // An toàn giao thông (ATGT)
     };
   };
   materials: {
