@@ -1,6 +1,6 @@
 import { Grade, LessonActivity } from "../types";
 import { getGrade1DetailedActivities } from "./grade1ActivitiesGenerator";
-import { cleanLessonTitle, normalizeActivityName } from "../utils/lessonTitleHelper";
+import { cleanLessonTitle, normalizeActivityName, isLaterPeriodOfMultiPeriodLesson } from "../utils/lessonTitleHelper";
 import { getAtgtLessonForWeek } from "./atgtCurriculum";
 import { getLessonNotebookSummary } from "./lessonNotebookSummaryHelper";
 import { getSubjectEssentialMaterials } from "../utils/materialsHelper";
@@ -566,13 +566,36 @@ function getRawDetailedLessonActivities(params: {
   // 4. MÔN KHOA HỌC (SCIENCE) - Khối 4, 5
   // =========================================================================
   if (subLower.includes("khoa học") || subLower === "kh") {
-    const notebookSummary = getLessonNotebookSummary({ grade, subject, lessonTitle });
+    const isLaterPeriod = isLaterPeriodOfMultiPeriodLesson(lessonTitle);
+    const notebookSummary = isLaterPeriod ? undefined : getLessonNotebookSummary({ grade, subject, lessonTitle });
     const specificCompetencies = [
       `Học sinh giải thích được hiện tượng, nêu được bản chất khoa học và vai trò trong bài: "${lessonTitle}".`,
       "Rèn luyện phương pháp quan sát, thực nghiệm khoa học, tư duy logic và ý thức bảo vệ tài nguyên thiên nhiên, môi trường sống."
     ];
     const teacherMaterials = getSubjectEssentialMaterials("teacher", subject, lessonTitle, grade);
     const studentMaterials = getSubjectEssentialMaterials("student", subject, lessonTitle, grade);
+
+    const act4Teacher = isLaterPeriod
+      ? `• Đặt câu hỏi liên hệ thực tế: "Chúng ta có thể làm gì để áp dụng kiến thức bài học này vào cuộc sống?"
+• Củng cố, hệ thống lại kiến thức trọng tâm đã học ở tiết trước.
+• Hướng dẫn học sinh vận dụng kiến thức vào thực tế, hoàn thiện các bài tập khoa học.
+• Dặn dò học sinh chuẩn bị bài cho tiết học tiếp theo.`
+      : `• Đặt câu hỏi vận dụng thực tế:
+- "Chúng ta có thể làm gì tại gia đình và địa phương để áp dụng kiến thức bài học này (bảo vệ nguồn nước, tiết kiệm điện, bảo vệ đất)?"
+• Rút bài học cho học sinh ghi nhớ (ngắn gọn):
+★ BÀI HỌC:
+${notebookSummary}
+• Dặn dò học sinh tiếp tục quan sát thiên nhiên, chuẩn bị bài mới.`;
+
+    const act4Student = isLaterPeriod
+      ? `• Nêu các hành động cụ thể trong sinh hoạt hàng ngày.
+• Lắng nghe, nhớ lại kiến thức bài học đã ghi ở tiết 1.
+• Thực hành các bài tập vận dụng theo hướng dẫn của giáo viên.
+• Ghi nhớ lời dặn dò của giáo viên, dọn dẹp phòng học sạch sẽ.`
+      : `• Nêu các hành động cụ thể trong sinh hoạt hàng ngày.
+• Đọc lại bài học (1-2 học sinh đọc, cả lớp đọc đồng thanh).
+• Ghi bài học ngắn gọn vào vở cẩn thận, sạch đẹp.
+• Ghi nhớ lời dặn dò của giáo viên, dọn dẹp phòng học sạch sẽ.`;
 
     const activities: LessonActivity[] = [
       {
@@ -622,18 +645,8 @@ function getRawDetailedLessonActivities(params: {
       {
         name: "4. Hoạt động Vận dụng (3 đến 5 phút)",
         objective: "Ứng dụng kiến thức khoa học vào bảo vệ môi trường và giữ gìn sức khỏe gia đình.",
-        teacherActivity: `• Đặt câu hỏi vận dụng thực tế:
-- "Chúng ta có thể làm gì tại gia đình và địa phương để áp dụng kiến thức bài học này (ví dụ: bảo vệ nguồn nước, tiết kiệm điện, chống xói mòn đất)?"
-• Rút ra ghi nhớ bài học & Hướng dẫn HS ghi bài vào vở:
-- GV chốt lại nội dung cốt lõi của bài học và chiếu/ghi bảng mục Ghi nhớ cho học sinh ghi vào vở:
-★ NỘI DUNG GHI NHỚ (HS GHI BÀI VÀO VỞ):
-${notebookSummary}
-• Dặn dò học sinh tiếp tục quan sát thiên nhiên, chuẩn bị bài mới.`,
-        studentActivity: `• Nêu các hành động cụ thể trong sinh hoạt hàng ngày.
-• Rút ra ghi nhớ và ghi chép bài học:
-- 2-3 học sinh đọc to mục Ghi nhớ trước lớp; cả lớp đọc đồng thanh để khắc sâu bài học.
-- Chú ý lắng nghe giáo viên và ghi chép nội dung Tóm tắt ghi nhớ vào vở bài học đầy đủ, sạch đẹp, đúng chính tả.
-• Ghi nhớ lời dặn dò của giáo viên, dọn dẹp phòng học sạch sẽ.`
+        teacherActivity: act4Teacher,
+        studentActivity: act4Student
       }
     ];
 
@@ -644,13 +657,36 @@ ${notebookSummary}
   // 5. MÔN LỊCH SỬ VÀ ĐỊA LÍ - Khối 4, 5
   // =========================================================================
   if (subLower.includes("lịch sử") || subLower.includes("địa lí") || subLower.includes("ls-đl") || subLower === "ls" || subLower === "đl") {
-    const notebookSummary = getLessonNotebookSummary({ grade, subject, lessonTitle });
+    const isLaterPeriod = isLaterPeriodOfMultiPeriodLesson(lessonTitle);
+    const notebookSummary = isLaterPeriod ? undefined : getLessonNotebookSummary({ grade, subject, lessonTitle });
     const specificCompetencies = [
       `Học sinh trình bày được diễn biến sự kiện lịch sử hoặc đặc điểm địa lí tự nhiên, dân cư, kinh tế trong bài: "${lessonTitle}".`,
       "Biết khai thác lược đồ, bản đồ, tranh ảnh hiện vật lịch sử; bồi dưỡng lòng tự hào dân tộc và tình yêu quê hương đất nước."
     ];
     const teacherMaterials = getSubjectEssentialMaterials("teacher", subject, lessonTitle, grade);
     const studentMaterials = getSubjectEssentialMaterials("student", subject, lessonTitle, grade);
+
+    const act4Teacher = isLaterPeriod
+      ? `• Đặt câu hỏi liên hệ: "Em làm gì để thể hiện lòng yêu quê hương, đất nước?"
+• Củng cố, nhắc lại kiến thức trọng tâm đã học ở tiết trước.
+• Hướng dẫn học sinh tiếp tục thực hành, hoàn thiện bài tập và vận dụng thực tiễn.
+• Dặn dò học sinh chuẩn bị bài cho tiết học tiếp theo.`
+      : `• Đặt câu hỏi liên hệ:
+- "Là học sinh tiểu học, em cần làm gì để thể hiện lòng biết ơn các thế hệ cha anh hoặc góp phần bảo tồn vẻ đẹp quê hương?"
+• Rút bài học cho học sinh ghi nhớ (ngắn gọn):
+★ BÀI HỌC:
+${notebookSummary}
+• Dặn dò học sinh tìm hiểu thêm thông tin qua sách báo, internet an toàn và chuẩn bị bài mới.`;
+
+    const act4Student = isLaterPeriod
+      ? `• Chia sẻ suy nghĩ cá nhân.
+• Chú ý lắng nghe, ôn lại bài học đã ghi ở tiết 1.
+• Tích cực tham gia thực hành, hoàn thành bài tập.
+• Ghi nhớ lời dặn dò của thầy cô.`
+      : `• Chia sẻ suy nghĩ cá nhân: Nêu quyết tâm chăm ngoan, học giỏi, yêu quý quê hương.
+• Đọc lại bài học (1-2 học sinh đọc, cả lớp đọc đồng thanh).
+• Ghi bài học ngắn gọn vào vở cẩn thận, sạch đẹp.
+• Ghi nhớ lời dặn dò của thầy cô.`;
 
     const activities: LessonActivity[] = [
       {
@@ -699,18 +735,8 @@ ${notebookSummary}
       {
         name: "4. Hoạt động Vận dụng (3 đến 5 phút)",
         objective: "Liên hệ trách nhiệm của học sinh đối với việc giữ gìn truyền thống và bảo vệ quê hương.",
-        teacherActivity: `• Đặt câu hỏi liên hệ:
-- "Là học sinh tiểu học, em cần làm gì để thể hiện lòng biết ơn các thế hệ cha anh đi trước hoặc góp phần bảo tồn vẻ đẹp của vùng đất này?"
-• Rút ra ghi nhớ bài học & Hướng dẫn HS ghi bài vào vở:
-- GV chốt lại nội dung cốt lõi của bài học và chiếu/ghi bảng mục Ghi nhớ cho học sinh ghi vào vở:
-★ NỘI DUNG GHI NHỚ (HS GHI BÀI VÀO VỞ):
-${notebookSummary}
-• Dặn dò học sinh tìm hiểu thêm thông tin qua sách báo, internet an toàn và chuẩn bị bài mới.`,
-        studentActivity: `• Chia sẻ suy nghĩ cá nhân: Nêu quyết tâm chăm ngoan, học giỏi, giữ gìn vệ sinh di tích lịch sử và yêu quý quê hương.
-• Rút ra ghi nhớ và ghi chép bài học:
-- 2-3 học sinh đọc to mục Ghi nhớ trước lớp; cả lớp đọc đồng thanh.
-- Chú ý lắng nghe giáo viên và ghi chép nội dung Tóm tắt ghi nhớ vào vở bài học đầy đủ, sạch đẹp, đúng chính tả.
-• Ghi nhớ lời dặn dò của thầy cô.`
+        teacherActivity: act4Teacher,
+        studentActivity: act4Student
       }
     ];
 
@@ -1046,13 +1072,35 @@ ${isAtgtActive ? `• Tiếp thu nội dung bài học An toàn giao thông (${a
   }
 
   if (subLower.includes("công nghệ") || subLower === "cn") {
-    const notebookSummary = getLessonNotebookSummary({ grade, subject, lessonTitle });
+    const isLaterPeriod = isLaterPeriodOfMultiPeriodLesson(lessonTitle);
+    const notebookSummary = isLaterPeriod ? undefined : getLessonNotebookSummary({ grade, subject, lessonTitle });
     const specificCompetencies = [
       `Hiểu cấu tạo, tác dụng và các bước sử dụng/lắp ráp an toàn trong bài: "${lessonTitle}".`,
       "Phát triển tư duy công nghệ, kỹ năng khéo léo và ý thức tiết kiệm năng lượng, an toàn lao động (STEM)."
     ];
     const teacherMaterials = getSubjectEssentialMaterials("teacher", subject, lessonTitle, grade);
     const studentMaterials = getSubjectEssentialMaterials("student", subject, lessonTitle, grade);
+
+    const act4Teacher = isLaterPeriod
+      ? `• Đặt câu hỏi củng cố: "Em làm gì để sử dụng đồ dùng công nghệ an toàn và tiết kiệm điện?"
+• Củng cố, nhắc lại kiến thức trọng tâm đã học ở tiết trước.
+• Hướng dẫn học sinh tiếp tục thực hành, hoàn thiện sản phẩm công nghệ.
+• Dặn dò học sinh thu dọn dụng cụ và chuẩn bị bài cho tiết học tiếp theo.`
+      : `• Đặt câu hỏi liên hệ thực tế tại gia đình: "Em làm gì để sử dụng an toàn và tiết kiệm điện?"
+• Rút bài học cho học sinh ghi nhớ (ngắn gọn):
+★ BÀI HỌC:
+${notebookSummary}
+• Dặn dò học sinh thu dọn dụng cụ gọn gàng.`;
+
+    const act4Student = isLaterPeriod
+      ? `• Nêu các việc làm tiết kiệm điện và an toàn tại nhà.
+• Lắng nghe, nhớ lại kiến thức bài học đã ghi ở tiết 1.
+• Tiếp tục thực hành lắp ghép hoặc sử dụng sản phẩm.
+• Thu dọn dụng cụ ngăn nắp vào hộp.`
+      : `• Nêu các việc làm tiết kiệm điện và an toàn tại nhà.
+• Đọc lại bài học (1-2 học sinh đọc, cả lớp đọc đồng thanh).
+• Ghi bài học ngắn gọn vào vở cẩn thận, sạch đẹp.
+• Thu dọn bộ dụng cụ kỹ thuật ngăn nắp vào hộp.`;
 
     const activities: LessonActivity[] = [
       {
@@ -1083,17 +1131,8 @@ ${isAtgtActive ? `• Tiếp thu nội dung bài học An toàn giao thông (${a
       {
         name: "4. Hoạt động Vận dụng (3 đến 5 phút)",
         objective: "Sử dụng đúng cách và an toàn các thiết bị công nghệ trong gia đình.",
-        teacherActivity: `• Đặt câu hỏi liên hệ thực tế tại gia đình: "Em làm gì để sử dụng an toàn và tiết kiệm điện?"
-• Rút ra ghi nhớ bài học & Hướng dẫn HS ghi bài vào vở:
-- GV chốt lại kiến thức cốt lõi của bài học và chiếu/ghi bảng mục Ghi nhớ cho học sinh ghi vào vở:
-★ NỘI DUNG GHI NHỚ (HS GHI BÀI VÀO VỞ):
-${notebookSummary}
-• Dặn dò học sinh thu dọn dụng cụ gọn gàng.`,
-        studentActivity: `• Nêu các việc làm tiết kiệm điện và an toàn tại nhà.
-• Rút ra ghi nhớ và ghi chép bài học:
-- 2-3 học sinh đọc to mục Ghi nhớ trước lớp; cả lớp đọc đồng thanh.
-- Chú ý lắng nghe giáo viên và ghi chép nội dung Tóm tắt ghi nhớ vào vở bài học đầy đủ, sạch đẹp, đúng chính tả.
-• Thu dọn bộ dụng cụ kỹ thuật ngăn nắp vào hộp.`
+        teacherActivity: act4Teacher,
+        studentActivity: act4Student
       }
     ];
 

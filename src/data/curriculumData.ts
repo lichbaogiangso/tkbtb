@@ -2,7 +2,7 @@ import { Grade, LessonPlan, ScheduleItem } from "../types";
 import { getDetailedMusicLesson } from "./musicLessonDetails";
 import { getDetailedEnglishLesson } from "./englishLessonDetails";
 import { getDetailedLessonActivities } from "./detailedActivitiesGenerator";
-import { cleanLessonTitle, normalizeActivityName } from "../utils/lessonTitleHelper";
+import { cleanLessonTitle, normalizeActivityName, isLaterPeriodOfMultiPeriodLesson } from "../utils/lessonTitleHelper";
 import { WEEK_3_GRADE_5_PLANS } from "./week3SamplePlans";
 import { getLessonNotebookSummary } from "./lessonNotebookSummaryHelper";
 import { cleanMaterialsList } from "../utils/materialsHelper";
@@ -666,7 +666,16 @@ export function generateFullWeekLessonPlans(
       const sp = SAMPLE_LESSON_PLANS[sampleKey];
       const isTargetSubject = (Number(itemGrade) === 4 || Number(itemGrade) === 5) &&
         (normSub.includes("khoa học") || normSub.includes("lịch sử") || normSub.includes("địa lí") || normSub.includes("địa lý") || normSub.includes("công nghệ") || normSub === "kh" || normSub === "cn" || normSub === "ls" || normSub === "đl");
-      const resolvedNotebookSummary = sp.notebookSummary || (isTargetSubject ? getLessonNotebookSummary({ grade: itemGrade, subject: item.subject, lessonTitle: sp.lessonTitle }) : undefined);
+      const isLaterPeriod = isLaterPeriodOfMultiPeriodLesson(sp.lessonTitle || item.lessonTitle);
+      const resolvedNotebookSummary = (!isLaterPeriod && isTargetSubject)
+        ? (getLessonNotebookSummary({ grade: itemGrade, subject: item.subject, lessonTitle: sp.lessonTitle }) || sp.notebookSummary)
+        : undefined;
+
+      const is5AEthics = (item.className === "5A" || schoolInfo.className === "5A") &&
+        (normSub.includes("đạo đức") || normSub.includes("đđ"));
+      const planTeacherName = is5AEthics
+        ? "Thầy Quan"
+        : (item.specialistTeacherName || schoolInfo.teacherName);
 
       plans.push({
         ...sp,
@@ -680,7 +689,7 @@ export function generateFullWeekLessonPlans(
         periodNumber: currentPeriodInDay,
         curriculumPeriod: item.curriculumPeriod || currentPeriodInDay,
         lessonTitle: cleanLessonTitle(sp.lessonTitle),
-        teacherName: schoolInfo.teacherName,
+        teacherName: planTeacherName,
         className: item.className || schoolInfo.className,
         schoolName: schoolInfo.schoolName,
         departmentName: schoolInfo.departmentName,
@@ -693,9 +702,14 @@ export function generateFullWeekLessonPlans(
         activities: (sp.activities || []).map((act, actIdx, arr) => {
           let teacherAct = act.teacherActivity;
           let studentAct = act.studentActivity;
-          if (isTargetSubject && resolvedNotebookSummary && actIdx === arr.length - 1 && !teacherAct.includes("NỘI DUNG GHI NHỚ")) {
-            teacherAct = `${teacherAct}\n• Rút ra ghi nhớ bài học & Hướng dẫn HS ghi bài vào vở:\n- GV chốt lại kiến thức cốt lõi của bài học và chiếu/ghi bảng mục Ghi nhớ cho học sinh ghi vào vở:\n★ NỘI DUNG GHI NHỚ (HS GHI BÀI VÀO VỞ):\n${resolvedNotebookSummary}`;
-            studentAct = `${studentAct}\n• Rút ra ghi nhớ và ghi chép bài học:\n- 2-3 học sinh đọc to mục Ghi nhớ trước lớp, cả lớp đọc đồng thanh.\n- Lắng nghe GV hướng dẫn và ghi chép nội dung Tóm tắt ghi nhớ vào vở bài học đầy đủ, sạch đẹp, đúng chính tả.`;
+          if (isTargetSubject && actIdx === arr.length - 1) {
+            if (isLaterPeriod) {
+              teacherAct = `${teacherAct}\n• Củng cố, nhắc lại kiến thức trọng tâm đã học ở tiết trước; hướng dẫn học sinh thực hành vận dụng và chuẩn bị cho tiết học sau.`;
+              studentAct = `${studentAct}\n• Chú ý lắng nghe, ôn lại bài học đã ghi ở tiết 1 và hoàn thành bài tập vận dụng.`;
+            } else if (resolvedNotebookSummary && !teacherAct.includes("BÀI HỌC")) {
+              teacherAct = `${teacherAct}\n• Rút bài học cho học sinh ghi nhớ (ngắn gọn):\n★ BÀI HỌC:\n${resolvedNotebookSummary}`;
+              studentAct = `${studentAct}\n• Đọc lại bài học và ghi bài học ngắn gọn vào vở cẩn thận, sạch đẹp.`;
+            }
           }
           return {
             ...act,
@@ -784,6 +798,12 @@ export function generateFullWeekLessonPlans(
     const rawLessonTitle = musicDetail ? musicDetail.lessonTitle : (englishDetail ? englishDetail.lessonTitle : item.lessonTitle);
     const finalLessonTitle = cleanLessonTitle(rawLessonTitle);
 
+    const is5AEthics = (item.className === "5A" || schoolInfo.className === "5A") &&
+      (subLower.includes("đạo đức") || subLower.includes("đđ"));
+    const planTeacherName = is5AEthics
+      ? "Thầy Quan"
+      : (item.specialistTeacherName || schoolInfo.teacherName);
+
     plans.push({
       id: `plan-${item.id}-${idx}`,
       grade: itemGrade,
@@ -797,13 +817,14 @@ export function generateFullWeekLessonPlans(
       week: schoolInfo.week,
       dayOfWeek: item.day,
       dateStr: item.dateStr || schoolInfo.startDate,
-      teacherName: schoolInfo.teacherName,
+      teacherName: planTeacherName,
       className: item.className || schoolInfo.className,
       schoolName: schoolInfo.schoolName,
       departmentName: schoolInfo.departmentName,
       branchName: schoolInfo.branchName,
       notebookSummary: (detailedRes as any)?.notebookSummary || (
         (Number(itemGrade) === 4 || Number(itemGrade) === 5) &&
+        !isLaterPeriodOfMultiPeriodLesson(finalLessonTitle) &&
         (subLower.includes("khoa học") || subLower.includes("lịch sử") || subLower.includes("địa lí") || subLower.includes("địa lý") || subLower.includes("công nghệ") || subLower === "kh" || subLower === "cn" || subLower === "ls" || subLower === "đl")
           ? getLessonNotebookSummary({ grade: itemGrade, subject: item.subject, lessonTitle: finalLessonTitle })
           : undefined

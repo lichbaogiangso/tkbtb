@@ -28,7 +28,7 @@ export const DEFAULT_TEACHERS: TeacherInfo[] = [
   { id: "dat_3b", name: "Hoàng Văn Đạt", role: "GVCN 3B", type: "homeroom", assignedClasses: ["3B"], subjects: ["Tiếng Việt", "Toán", "Đạo đức", "HĐTN", "TCTV", "TCT", "CN"], teachingPeriods: 19, concurrentPeriods: 4, totalPeriods: 23 },
   { id: "hang_4a", name: "Lê Thị Hằng", role: "GVCN 4A", type: "homeroom", assignedClasses: ["4A"], subjects: ["Tiếng Việt", "Toán", "Khoa học", "Lịch sử & Địa lí", "HĐTN", "TCTV"], teachingPeriods: 19, concurrentPeriods: 4, totalPeriods: 23 },
   { id: "yen_4b", name: "Cô Yến", role: "GVCN 4B", type: "homeroom", assignedClasses: ["4B"], subjects: ["Tiếng Việt", "Toán", "Khoa học", "Lịch sử & Địa lí", "HĐTN"], teachingPeriods: 19, concurrentPeriods: 4, totalPeriods: 23 },
-  { id: "tuan_5a", name: "Nguyễn Hoàng Tuấn", role: "GVCN 5A", type: "homeroom", assignedClasses: ["5A"], subjects: ["Tiếng Việt", "Toán", "Khoa học", "Lịch sử & Địa lí", "HĐTN", "TCTV", "Đạo đức"], teachingPeriods: 20, concurrentPeriods: 3, totalPeriods: 23 },
+  { id: "tuan_5a", name: "Nguyễn Hoàng Tuấn", role: "GVCN 5A", type: "homeroom", assignedClasses: ["5A"], subjects: ["Tiếng Việt", "Toán", "Khoa học", "Lịch sử & Địa lí", "HĐTN", "TCTV"], teachingPeriods: 19, concurrentPeriods: 4, totalPeriods: 23 },
   { id: "hue_5b", name: "Trần Thị Huế", role: "GVCN 5B", type: "homeroom", assignedClasses: ["5B"], subjects: ["Tiếng Việt", "Toán", "Khoa học", "Lịch sử & Địa lí", "HĐTN", "TCTV"], teachingPeriods: 19, concurrentPeriods: 4, totalPeriods: 23 },
 
   // 8 GIÁO VIÊN CHUYÊN & BỘ MÔN (TOÀN TRƯỜNG)
@@ -110,7 +110,7 @@ export const TIMETABLE_TUAN_2_SLOTS: Record<string, Record<string, string>> = {
   "Thứ Hai_Sáng_5": { "1A": "", "1B": "", "2A": "", "2B": "", "3A": "", "3B": "", "4A": "", "4B": "", "5A": "", "5B": "" },
 
   "Thứ Hai_Chiều_1": { "1A": "TV", "1B": "ĐĐ (Nhàn)", "2A": "AN (Tâm)", "2B": "TCTV", "3A": "TH (Phương)", "3B": "TNXH (Phước)", "4A": "TA (Nương)", "4B": "LS-ĐL", "5A": "MT (Thy)", "5B": "TV" },
-  "Thứ Hai_Chiều_2": { "1A": "AN (Tâm)", "1B": "TNXH (Phước)", "2A": "GDTC (Thịnh)", "2B": "ĐĐ (Nhàn)", "3A": "TA (Nương)", "3B": "T", "4A": "MT (Thy)", "4B": "KH", "5A": "ĐĐ", "5B": "LS-ĐL" },
+  "Thứ Hai_Chiều_2": { "1A": "AN (Tâm)", "1B": "TNXH (Phước)", "2A": "GDTC (Thịnh)", "2B": "ĐĐ (Nhàn)", "3A": "TA (Nương)", "3B": "T", "4A": "MT (Thy)", "4B": "KH", "5A": "ĐĐ (Quan)", "5B": "LS-ĐL" },
   "Thứ Hai_Chiều_3": { "1A": "TCTV", "1B": "TH (Phương)", "2A": "MT (Thy)", "2B": "TNXH (Phước)", "3A": "AN (Tâm)", "3B": "ĐĐ", "4A": "GDTC (Thịnh)", "4B": "CN (Nhàn)", "5A": "TA (Nương)", "5B": "KH" },
 
   // THỨ BA (15/09/2026)
@@ -695,7 +695,7 @@ export function getSpecialistTeacherShortName(item: {
   if (raw.includes("(PHƯỚC)") || note.includes("PHƯỚC")) {
     return "Thầy Phước";
   }
-  if (raw.includes("(QUAN)") || note.includes("QUAN")) {
+  if (raw.includes("(QUAN)") || note.includes("QUAN") || (sub.includes("ĐẠO ĐỨC") && (raw.includes("5A") || note.includes("QUAN")))) {
     return "Thầy Quan";
   }
 
@@ -934,7 +934,9 @@ export function mapRawSubjectToScheduleItem(
   // 13. ĐẠO ĐỨC (ĐĐ)
   else if (clean.includes("ĐĐ") || clean.toLowerCase().includes("đạo đức") || clean.toLowerCase().includes("dao duc")) {
     subject = `ĐẠO ĐỨC ${gradeNum}`;
-    if (!note && clean.includes("Quan")) note = "PHT: Phan Ngọc Quan";
+    if (!note && (clean.includes("Quan") || className === "5A" || className === "5B" || className === "4A" || className === "4B")) {
+      note = "GV Bộ môn: Thầy Quan";
+    }
     if (!note && clean.includes("Nhàn")) note = "GV Bộ môn: Cô Nhàn";
     const pInW = subjectPeriodInWeek || 1;
     const info = getGradeCurriculumLesson(gradeNum, "đạo đức", week, pInW);
@@ -1043,7 +1045,11 @@ export function mapRawSubjectToScheduleItem(
     integrationNotes = "Thực hiện theo kế hoạch nhà trường";
   }
 
-  const specName = getSpecialistTeacherShortName({ subject, subSubject, note, lessonTitle, raw: clean });
+  let specName = getSpecialistTeacherShortName({ subject, subSubject, note, lessonTitle, raw: clean });
+  if (!specName && (className === "5A" || className === "5B" || className === "4A" || className === "4B") && (subject.toUpperCase().includes("ĐẠO ĐỨC") || clean.toUpperCase().includes("ĐĐ"))) {
+    specName = "Thầy Quan";
+    if (!note) note = "GV Bộ môn: Thầy Quan";
+  }
   const isSpecialistPeriod = Boolean(specName) && subject !== "HỌP";
 
   return {

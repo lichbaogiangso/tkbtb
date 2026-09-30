@@ -60,6 +60,16 @@ export function cleanLessonTitle(title: string | undefined | null): string {
 }
 
 /**
+ * Kiểm tra xem bài dạy có phải là Tiết 2, 3, 4... của bài học kéo dài nhiều tiết hay không.
+ * Quy định chuyên môn: Học sinh chỉ rút bài học ghi vở 1 lần (ở tiết 1 hoặc bài 1 tiết).
+ * Tuyệt đối không cho học sinh ghi vào các tiết 2, 3, 4 của bài dạy có 2, 3, 4 tiết.
+ */
+export function isLaterPeriodOfMultiPeriodLesson(title: string | undefined | null): boolean {
+  if (!title) return false;
+  return /(?:tiết|t)\s*([2-4])(?:\s*[\/\-]\s*\d+)?(?:\)|$|\s)/i.test(title);
+}
+
+/**
  * Chuẩn hóa tên môn học trong KHBD:
  * - Ghi "Toán", "Tiếng Việt", "Đạo đức", "Khoa học", "Lịch sử và Địa lí", "HĐTN"...
  * - Tuyệt đối không ghi chữ "Môn", không ghi "Môn: ...", không ghi số khối lớp ("Toán 5" -> "Toán")
