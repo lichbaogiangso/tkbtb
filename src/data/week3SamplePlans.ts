@@ -35,8 +35,8 @@ export const WEEK_3_GRADE_5_PLANS: Record<string, LessonPlan> = {
       }
     },
     materials: {
-      teacher: ["Kế hoạch tuần 3, micro, loa đài, video clip/câu chuyện ý nghĩa về 'Niềm vui nhân đôi, nỗi buồn chia nửa', 'Hộp thư điều em muốn nói' hoặc bảng cảm xúc."],
-      student: ["Trang phục chỉnh tề, khăn quàng đỏ, sổ tay Đội viên, giấy màu/bút viết lời nhắn yêu thương."]
+      teacher: ["Micro, loa đài, video clip/câu chuyện ý nghĩa về 'Niềm vui nhân đôi, nỗi buồn chia nửa', 'Hộp thư điều em muốn nói' hoặc bảng cảm xúc."],
+      student: ["Trang phục chỉnh tề, khăn quàng đỏ, sổ tay Đội viên, giấy màu viết lời nhắn yêu thương."]
     },
     activities: [
       {
@@ -92,8 +92,8 @@ export const WEEK_3_GRADE_5_PLANS: Record<string, LessonPlan> = {
       integrations: {}
     },
     materials: {
-      teacher: ["Sách giáo khoa, máy chiếu trình chiếu bài thơ, tranh ảnh minh họa hạt nảy mầm."],
-      student: ["Sách giáo khoa Tiếng Việt 5, vở ghi bài."]
+      teacher: ["Máy chiếu trình chiếu bài thơ, tranh ảnh minh họa hạt nảy mầm."],
+      student: ["Tranh ảnh sưu tầm về các loài hoa, hạt giống tự nhiên."]
     },
     activities: [
       {
@@ -152,7 +152,7 @@ export const WEEK_3_GRADE_5_PLANS: Record<string, LessonPlan> = {
     },
     materials: {
       teacher: ["Phiếu bài tập nhóm, bảng phụ ghi các đoạn văn mẫu."],
-      student: ["Vở bài tập Tiếng Việt 5, bút."]
+      student: ["Thẻ từ ngữ ghi đại từ xưng hô, giấy ghi chú thảo luận nhóm."]
     },
     activities: [
       {
@@ -208,8 +208,8 @@ export const WEEK_3_GRADE_5_PLANS: Record<string, LessonPlan> = {
       integrations: {}
     },
     materials: {
-      teacher: ["Bộ đồ dùng dạy học Toán 5, phiếu học tập nhóm."],
-      student: ["Bộ thực hành Toán 5, bảng con, nháp."]
+      teacher: ["Bài giảng điện tử mô phỏng phép cộng phân số, phiếu học tập nhóm."],
+      student: ["Thước thẳng có chia vạch, giấy màu thực hành gấp mảnh phân số."]
     },
     activities: [
       {
@@ -291,7 +291,7 @@ export const WEEK_3_GRADE_5_PLANS: Record<string, LessonPlan> = {
     },
     materials: {
       teacher: ["Slide bài giảng, video tư liệu về Bà mẹ Việt Nam anh hùng, tranh ảnh di tích lịch sử."],
-      student: ["SGK Đạo đức 5, vở ghi bài."]
+      student: ["Tranh ảnh, tư liệu sưu tầm về các tấm gương anh hùng liệt sĩ, thẻ bày tỏ ý kiến."]
     },
     activities: [
       {
@@ -347,8 +347,8 @@ export const WEEK_3_GRADE_5_PLANS: Record<string, LessonPlan> = {
       integrations: {}
     },
     materials: {
-      teacher: ["Kế hoạch bài dạy, bài giảng điện tử (PPTX), bảng phụ ghi sẵn đoạn văn mẫu."],
-      student: ["Sách giáo khoa Tiếng Việt 5, vở bài tập Tiếng Việt, vở ghi bài."]
+      teacher: ["Bài giảng điện tử (PPTX), bảng phụ ghi sẵn đoạn văn mẫu."],
+      student: ["Sơ đồ tư duy gợi ý cấu trúc đoạn văn, giấy ghi chú thảo luận nhóm."]
     },
     activities: [
       {
@@ -404,8 +404,8 @@ export const WEEK_3_GRADE_5_PLANS: Record<string, LessonPlan> = {
       integrations: {}
     },
     materials: {
-      teacher: ["Bài giảng điện tử tương tác, bộ đồ dùng dạy học Toán 5, bảng phụ."],
-      student: ["SGK Toán 5, vở bài tập Toán, bảng con, nháp."]
+      teacher: ["Bài giảng điện tử tương tác, bảng phụ ghi quy tắc phép tính."],
+      student: ["Thước thẳng chia vạch mm/cm, ê-ke đo góc."]
     },
     activities: [
       {
@@ -490,7 +490,7 @@ export const WEEK_3_GRADE_5_PLANS: Record<string, LessonPlan> = {
     },
     materials: {
       teacher: ["Bản đồ Địa lí tự nhiên Việt Nam, slide bài giảng, phiếu học tập."],
-      student: ["SGK Lịch sử và Địa lí 5, vở ghi, thước kẻ."]
+      student: ["Lược đồ câm Địa lí tự nhiên Việt Nam, bút màu vẽ lược đồ."]
     },
     activities: [
       {
@@ -510,10 +510,11 @@ export const WEEK_3_GRADE_5_PLANS: Record<string, LessonPlan> = {
       },
       {
         name: "4. Hoạt động vận dụng và trải nghiệm (3-5 phút)",
-        teacherActivity: "Đặt câu hỏi liên hệ: Học sinh cần làm gì để bảo vệ giữ gìn nguồn nước sông hồ sạch đẹp?",
-        studentActivity: "Nêu các việc làm cụ thể: Không vứt rác xuống sông hồ, tiết kiệm nước sạch."
+        teacherActivity: "• Đặt câu hỏi liên hệ: Học sinh cần làm gì để bảo vệ giữ gìn nguồn nước sông hồ sạch đẹp?\n• Rút ra ghi nhớ bài học & Hướng dẫn HS ghi bài vào vở:\n- GV chốt lại kiến thức cốt lõi của bài học và chiếu/ghi bảng mục Ghi nhớ cho học sinh ghi vào vở:\n★ NỘI DUNG GHI NHỚ (HS GHI BÀI VÀO VỞ):\n1. Khí hậu nước ta mang tính chất nhiệt đới ẩm gió mùa: Nhiệt độ trung bình cao, nhiều mưa và gió thay đổi theo mùa.\n2. Mạng lưới sông ngòi nước ta dày đặc nhưng nhiều sông ngắn và dốc; hai hệ thống sông lớn nhất là sông Hồng và sông Mê Kông (sông Cửu Long).\n3. Học sinh cần có ý thức sử dụng tiết kiệm nước sạch và chung tay bảo vệ nguồn nước sông hồ không bị ô nhiễm.",
+        studentActivity: "• Nêu các việc làm cụ thể: Không vứt rác xuống sông hồ, tiết kiệm nước sạch.\n• 2-3 học sinh đọc to mục Ghi nhớ trước lớp; cả lớp đọc đồng thanh.\n• Lắng nghe GV hướng dẫn và ghi chép nội dung Tóm tắt ghi nhớ vào vở bài học đầy đủ, sạch đẹp, đúng chính tả."
       }
     ],
+    notebookSummary: "1. Khí hậu nước ta mang tính chất nhiệt đới ẩm gió mùa: Nhiệt độ trung bình cao, nhiều mưa và gió thay đổi theo mùa. Miền Bắc có mùa đông lạnh, miền Nam nóng quanh năm với hai mùa mưa - khô rõ rệt.\n2. Mạng lưới sông ngòi nước ta dày đặc nhưng nhiều sông ngắn và dốc; hai hệ thống sông lớn nhất là sông Hồng và sông Mê Kông (sông Cửu Long).\n3. Học sinh cần có ý thức sử dụng tiết kiệm nước sạch và chung tay bảo vệ nguồn nước sông hồ không bị ô nhiễm.",
     postLessonAdjustment: ".....................................................................................................................................................\n......................"
   },
 
@@ -547,7 +548,7 @@ export const WEEK_3_GRADE_5_PLANS: Record<string, LessonPlan> = {
     },
     materials: {
       teacher: ["Hình ảnh ruộng bậc thang, video về xói mòn đất, bảng nhóm."],
-      student: ["Giấy A3, bút dạ màu."]
+      student: ["Giấy A3, bút màu làm việc nhóm."]
     },
     activities: [
       {
@@ -567,10 +568,11 @@ export const WEEK_3_GRADE_5_PLANS: Record<string, LessonPlan> = {
       },
       {
         name: "4. Hoạt động vận dụng và trải nghiệm (3-5 phút)",
-        teacherActivity: "Yêu cầu HS viết 1 thông điệp ngắn kêu gọi giữ sạch môi trường đất.",
-        studentActivity: "Viết thông điệp: 'Hãy bón phân xanh, giữ sạch đất lành!' và dán góc học tập."
+        teacherActivity: "• Yêu cầu HS viết 1 thông điệp ngắn kêu gọi giữ sạch môi trường đất.\n• Rút ra ghi nhớ bài học & Hướng dẫn HS ghi bài vào vở:\n- GV chốt lại kiến thức cốt lõi của bài học và chiếu/ghi bảng mục Ghi nhớ cho học sinh ghi vào vở:\n★ NỘI DUNG GHI NHỚ (HS GHI BÀI VÀO VỞ):\n1. Đất bị ô nhiễm do rác thải sinh hoạt, túi nilon, hóa chất độc hại, bón phân hóa học và phun thuốc trừ sâu bừa bãi.\n2. Đất bị xói mòn do mưa lớn, lũ lụt và nạn chặt phá rừng đầu nguồn làm trôi lớp đất mặt màu mỡ.\n3. Biện pháp bảo vệ môi trường đất: Trồng rừng giữ đất, làm ruộng bậc thang, dùng phân bón hữu cơ và phân loại rác thải đúng quy định.",
+        studentActivity: "• Viết thông điệp: 'Hãy bón phân xanh, giữ sạch đất lành!' và dán góc học tập.\n• 2-3 học sinh đọc to mục Ghi nhớ trước lớp; cả lớp đọc đồng thanh.\n• Lắng nghe GV hướng dẫn và ghi chép nội dung Tóm tắt ghi nhớ vào vở bài học đầy đủ, sạch đẹp, đúng chính tả."
       }
     ],
+    notebookSummary: "1. Đất bị ô nhiễm do: Rác thải sinh hoạt, túi nilon, hóa chất độc hại, bón phân hóa học và phun thuốc trừ sâu bừa bãi.\n2. Đất bị xói mòn do: Mưa lớn, lũ lụt và nạn chặt phá rừng đầu nguồn làm trôi lớp đất mặt màu mỡ.\n3. Biện pháp bảo vệ môi trường đất: Trồng rừng giữ đất, làm ruộng bậc thang, dùng phân bón hữu cơ và phân loại rác thải đúng quy định.",
     postLessonAdjustment: ".....................................................................................................................................................\n......................"
   },
 
@@ -603,8 +605,8 @@ export const WEEK_3_GRADE_5_PLANS: Record<string, LessonPlan> = {
       integrations: {}
     },
     materials: {
-      teacher: ["Sách giáo khoa, máy chiếu, tranh minh họa bài đọc."],
-      student: ["SGK Tiếng Việt 5, vở ghi bài."]
+      teacher: ["Máy chiếu, tranh minh họa bài đọc."],
+      student: ["Tranh ảnh sưu tầm về các ngôi sao thể thao, tinh thần đồng đội."]
     },
     activities: [
       {
@@ -661,7 +663,7 @@ export const WEEK_3_GRADE_5_PLANS: Record<string, LessonPlan> = {
     },
     materials: {
       teacher: ["Bảng phụ ghi đoạn luyện đọc diễn cảm, slide bài giảng."],
-      student: ["SGK Tiếng Việt 5, vở ghi."]
+      student: ["Thẻ từ ngữ, giấy ghi chú thảo luận nhóm."]
     },
     activities: [
       {
@@ -718,7 +720,7 @@ export const WEEK_3_GRADE_5_PLANS: Record<string, LessonPlan> = {
     },
     materials: {
       teacher: ["Mô hình hình tròn/mảnh bìa trực quan, slide tương tác."],
-      student: ["Bộ đồ dùng học Toán 5, bảng con, nháp."]
+      student: ["Thước thẳng chia vạch, kéo thủ công và giấy màu ghép hình."]
     },
     activities: [
       {
@@ -801,7 +803,7 @@ export const WEEK_3_GRADE_5_PLANS: Record<string, LessonPlan> = {
     },
     materials: {
       teacher: ["Bản báo cáo công việc mẫu, slide bài giảng."],
-      student: ["SGK Tiếng Việt 5, vở ghi bài."]
+      student: ["Bảng mẫu dàn ý báo cáo công việc, phiếu thảo luận nhóm."]
     },
     activities: [
       {
@@ -860,7 +862,7 @@ export const WEEK_3_GRADE_5_PLANS: Record<string, LessonPlan> = {
     },
     materials: {
       teacher: ["Slide tương tác quy tắc chuyển đổi hỗn số, bảng phụ."],
-      student: ["SGK Toán 5, bảng con, vở bài tập."]
+      student: ["Thước thẳng có chia vạch, các thẻ phân số/hỗn số thực hành."]
     },
     activities: [
       {
@@ -945,7 +947,7 @@ export const WEEK_3_GRADE_5_PLANS: Record<string, LessonPlan> = {
     },
     materials: {
       teacher: ["Bản đồ phân bố đất và rừng Việt Nam, tranh ảnh rừng rậm nhiệt đới, rừng ngập mặn."],
-      student: ["SGK Lịch sử và Địa lí 5, vở ghi."]
+      student: ["Lược đồ trống phân bố đất rừng Việt Nam, bút màu."]
     },
     activities: [
       {
@@ -965,10 +967,11 @@ export const WEEK_3_GRADE_5_PLANS: Record<string, LessonPlan> = {
       },
       {
         name: "4. Hoạt động vận dụng và trải nghiệm (3-5 phút)",
-        teacherActivity: "Hỏi: 'Vì sao chúng ta phải tích cực trồng cây gây rừng và bảo vệ rừng?'",
-        studentActivity: "Nêu lý do: Rừng giúp chống lũ lụt, điều hòa khí hậu, cung cấp oxy và bảo vệ động vật."
+        teacherActivity: "• Hỏi: 'Vì sao chúng ta phải tích cực trồng cây gây rừng và bảo vệ rừng?'\n• Rút ra ghi nhớ bài học & Hướng dẫn HS ghi bài vào vở:\n- GV chốt lại kiến thức cốt lõi của bài học và chiếu/ghi bảng mục Ghi nhớ cho học sinh ghi vào vở:\n★ NỘI DUNG GHI NHỚ (HS GHI BÀI VÀO VỞ):\n1. Nước ta có 2 nhóm đất chính là đất phe-ra-lit (ở đồi núi, màu đỏ vàng) và đất phù sa (ở các đồng bằng, rất phì nhiêu màu mỡ, trồng lúa nước và cây ăn trái).\n2. Nước ta có rừng rậm nhiệt đới (ở vùng đồi núi có nhiều tầng cây xanh tốt quanh năm) và rừng ngập mặn (ven biển, rễ chùm chằng chịt giữ đất).\n3. Rừng và đất là tài nguyên quý giá; cần tích cực trồng cây gây rừng, chống xói mòn và bảo vệ môi trường sinh thái.",
+        studentActivity: "• Nêu lý do: Rừng giúp chống lũ lụt, điều hòa khí hậu, cung cấp oxy và bảo vệ động vật.\n• 2-3 học sinh đọc to mục Ghi nhớ trước lớp; cả lớp đọc đồng thanh.\n• Lắng nghe GV hướng dẫn và ghi chép nội dung Tóm tắt ghi nhớ vào vở bài học đầy đủ, sạch đẹp, đúng chính tả."
       }
     ],
+    notebookSummary: "1. Đất: Nước ta có 2 nhóm đất chính là đất phe-ra-lit (ở đồi núi, màu đỏ vàng) và đất phù sa (ở các đồng bằng, rất phì nhiêu màu mỡ, trồng lúa nước và cây ăn trái).\n2. Rừng: Nước ta có rừng rậm nhiệt đới (ở vùng đồi núi có nhiều tầng cây xanh tốt quanh năm) và rừng ngập mặn (ven biển, rễ chùm chằng chịt giữ đất).\n3. Rừng và đất là tài nguyên quý giá; cần tích cực trồng cây gây rừng, chống xói mòn và bảo vệ môi trường sinh thái.",
     postLessonAdjustment: ".....................................................................................................................................................\n......................"
   },
 
@@ -1004,7 +1007,7 @@ export const WEEK_3_GRADE_5_PLANS: Record<string, LessonPlan> = {
     },
     materials: {
       teacher: ["Cốc thủy tinh, thìa, nước, muối, đường, cát, phiếu thí nghiệm."],
-      student: ["Vở thực hành Khoa học 5."]
+      student: ["Mẫu vật thí nghiệm (muối ăn, đường kính, cốc nước lọc sạch) theo phân công nhóm."]
     },
     activities: [
       {
@@ -1024,10 +1027,11 @@ export const WEEK_3_GRADE_5_PLANS: Record<string, LessonPlan> = {
       },
       {
         name: "4. Hoạt động vận dụng và trải nghiệm (3-5 phút)",
-        teacherActivity: "Nêu các ví dụ về hỗn hợp và dung dịch thường gặp trong đời sống (nước muối sinh lý, nước chanh đường, canh rau).",
-        studentActivity: "Liên hệ thực tế đời sống gia đình."
+        teacherActivity: "• Nêu các ví dụ về hỗn hợp và dung dịch thường gặp trong đời sống (nước muối sinh lý, nước chanh đường, canh rau).\n• Rút ra ghi nhớ bài học & Hướng dẫn HS ghi bài vào vở:\n- GV chốt lại kiến thức cốt lõi của bài học và chiếu/ghi bảng mục Ghi nhớ cho học sinh ghi vào vở:\n★ NỘI DUNG GHI NHỚ (HS GHI BÀI VÀO VỞ):\n1. Hỗn hợp: Tạo thành từ hai hay nhiều chất trộn lẫn vào nhau và mỗi chất vẫn giữ nguyên tính chất riêng (VD: Muối trộn tiêu, gạo trộn vừng).\n2. Dung dịch: Là hỗn hợp đồng nhất giữa chất tan và dung môi (VD: Nước đường, nước muối loãng).\n3. Tách các chất trong hỗn hợp, dung dịch bằng phương pháp: Lọc, lắng gạn, hoặc làm bay hơi, cô cạn.",
+        studentActivity: "• Liên hệ thực tế đời sống gia đình.\n• 2-3 học sinh đọc to mục Ghi nhớ trước lớp; cả lớp đọc đồng thanh.\n• Lắng nghe GV hướng dẫn và ghi chép nội dung Tóm tắt ghi nhớ vào vở bài học đầy đủ, sạch đẹp, đúng chính tả."
       }
     ],
+    notebookSummary: "1. Hỗn hợp: Tạo thành từ hai hay nhiều chất trộn lẫn vào nhau và mỗi chất vẫn giữ nguyên tính chất riêng (VD: Muối trộn tiêu, gạo trộn vừng).\n2. Dung dịch: Là hỗn hợp đồng nhất giữa chất tan và dung môi (VD: Nước đường, nước muối loãng; trong đó đường/muối là chất tan, nước là dung môi).\n3. Tách các chất trong hỗn hợp, dung dịch bằng phương pháp: Lọc, lắng gạn, hoặc làm bay hơi, cô cạn.",
     postLessonAdjustment: ".....................................................................................................................................................\n......................"
   },
 
@@ -1061,7 +1065,7 @@ export const WEEK_3_GRADE_5_PLANS: Record<string, LessonPlan> = {
     },
     materials: {
       teacher: ["Bảng mẫu chữ viết đẹp, phiếu bài tập tăng cường."],
-      student: ["Vở rèn chữ, bút mực."]
+      student: ["Thước kẻ, bút luyện viết chữ đẹp."]
     },
     activities: [
       {
@@ -1118,7 +1122,7 @@ export const WEEK_3_GRADE_5_PLANS: Record<string, LessonPlan> = {
     },
     materials: {
       teacher: ["Các cuốn sách câu chuyện thể thao, mẫu Phiếu đọc sách."],
-      student: ["Sách truyện mang theo, Phiếu đọc sách."]
+      student: ["Truyện tranh/truyện chữ thể thao mang theo, Phiếu đọc sách theo mẫu."]
     },
     activities: [
       {
@@ -1175,7 +1179,7 @@ export const WEEK_3_GRADE_5_PLANS: Record<string, LessonPlan> = {
     },
     materials: {
       teacher: ["Thước kẻ, ê-ke to trên bảng lớp, hình vẽ ôn tập."],
-      student: ["SGK Toán 5, thước kẻ, ê-ke, vở bài tập."]
+      student: ["Thước thẳng chia vạch mm, ê-ke góc vuông."]
     },
     activities: [
       {
@@ -1272,7 +1276,7 @@ export const WEEK_3_GRADE_5_PLANS: Record<string, LessonPlan> = {
     },
     materials: {
       teacher: ["Sổ chủ nhiệm, bảng tổng hợp thi đua tuần 3, phương hướng tuần 4, video clip/hình ảnh mô phạm các quy tắc đi xe đạp an toàn và 4 bước chuyển hướng an toàn."],
-      student: ["Sổ theo dõi thi đua của cán sự lớp, phiếu tự đánh giá cá nhân, tài liệu Giáo dục An toàn giao thông lớp 5 (Bài 1: Đi xe đạp an toàn)."]
+      student: ["Sổ theo dõi thi đua của cán sự lớp, phiếu tự đánh giá cá nhân, tài liệu minh họa Giáo dục An toàn giao thông lớp 5."]
     },
     activities: [
       {

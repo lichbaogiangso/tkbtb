@@ -116,6 +116,7 @@ export interface LessonPlan {
   songLyrics?: string; // Lời ca đầy đủ của bài hát
   englishVocabulary?: string[]; // Các từ vựng trọng tâm (đối với môn Tiếng Anh)
   sentencePatterns?: string[]; // Mẫu câu giao tiếp trọng tâm (đối với môn Tiếng Anh)
+  notebookSummary?: string; // Tóm tắt ghi nhớ cốt lõi sau bài học cho HS ghi vở (Khoa học, Lịch sử và Địa lí, Công nghệ khối 4, 5)
   activities: LessonActivity[];
   postLessonAdjustment: string; // IV. Điều chỉnh sau bài dạy
 }

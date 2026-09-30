@@ -2,12 +2,15 @@ import { Grade, LessonActivity } from "../types";
 import { getGrade1DetailedActivities } from "./grade1ActivitiesGenerator";
 import { cleanLessonTitle, normalizeActivityName } from "../utils/lessonTitleHelper";
 import { getAtgtLessonForWeek } from "./atgtCurriculum";
+import { getLessonNotebookSummary } from "./lessonNotebookSummaryHelper";
+import { getSubjectEssentialMaterials } from "../utils/materialsHelper";
 
 export interface DetailedActivitiesResult {
   specificCompetencies: string[];
   teacherMaterials: string[];
   studentMaterials: string[];
   activities: LessonActivity[];
+  notebookSummary?: string;
 }
 
 // Helper to extract clean keywords from lesson title
@@ -86,13 +89,8 @@ function getRawDetailedLessonActivities(params: {
     const isEnhance = subLower.includes("tăng cường") || subSubLower.includes("tăng cường") || subLower.includes("tct");
     
     let specificCompetencies: string[] = [];
-    let teacherMaterials = [
-      `Kế hoạch bài dạy, bài giảng điện tử tương tác (PPTX), bộ đồ dùng dạy học Toán lớp ${grade} (que tính, bảng gài, mô hình trực quan, thẻ số).`,
-      "Phiếu học tập nhóm, thước kẻ, bảng phụ ghi sẵn đề bài tập và bảng số liệu."
-    ];
-    let studentMaterials = [
-      `Sách giáo khoa Toán ${grade}, vở bài tập Toán, bộ đồ dùng học Toán học sinh, bảng con, phấn/bút dạ, nháp.`
-    ];
+    let teacherMaterials = getSubjectEssentialMaterials("teacher", subject, lessonTitle, grade);
+    let studentMaterials = getSubjectEssentialMaterials("student", subject, lessonTitle, grade);
 
     if (grade === 1) {
       specificCompetencies = [
@@ -236,13 +234,8 @@ function getRawDetailedLessonActivities(params: {
       `Phát triển các kỹ năng đọc đúng, đọc hiểu, viết câu đúng ngữ pháp và diễn đạt lưu loát trong bài: "${lessonTitle}".`,
       `Mở rộng vốn từ ngữ phong phú, biết vận dụng vào giao tiếp hàng ngày; cảm nhận được vẻ đẹp của ngôn ngữ tiếng Việt.`
     ];
-    let teacherMaterials = [
-      `Kế hoạch bài dạy, bài giảng điện tử (PPTX), tranh ảnh/video minh họa bài đọc "${titleCore}".`,
-      "Bảng phụ ghi sẵn đoạn văn/đoạn thơ cần luyện đọc diễn cảm, phiếu học tập nhóm."
-    ];
-    let studentMaterials = [
-      `Sách giáo khoa Tiếng Việt ${grade}, vở bài tập Tiếng Việt, vở ghi bài, bút mực, thước kẻ.`
-    ];
+    let teacherMaterials = getSubjectEssentialMaterials("teacher", subject, lessonTitle, grade);
+    let studentMaterials = getSubjectEssentialMaterials("student", subject, lessonTitle, grade);
 
     if (isReading) {
       const activities: LessonActivity[] = [
@@ -507,13 +500,8 @@ function getRawDetailedLessonActivities(params: {
       `Học sinh nhận biết được các sự vật, hiện tượng, mối quan hệ trong bài: "${lessonTitle}".`,
       "Biết cách chăm sóc sức khỏe, bảo vệ an toàn cho bản thân và thể hiện hành vi có trách nhiệm với môi trường sống xung quanh."
     ];
-    const teacherMaterials = [
-      `Kế hoạch bài dạy, slide bài giảng điện tử (PPTX), tranh ảnh/video thực tế về "${titleCore}".`,
-      "Phiếu học tập nhóm, các thẻ tình huống đóng vai an toàn thực tiễn."
-    ];
-    const studentMaterials = [
-      `Sách giáo khoa Tự nhiên và Xã hội ${grade}, vở bài tập, bút màu.`
-    ];
+    const teacherMaterials = getSubjectEssentialMaterials("teacher", subject, lessonTitle, grade);
+    const studentMaterials = getSubjectEssentialMaterials("student", subject, lessonTitle, grade);
 
     const activities: LessonActivity[] = [
       {
@@ -578,17 +566,13 @@ function getRawDetailedLessonActivities(params: {
   // 4. MÔN KHOA HỌC (SCIENCE) - Khối 4, 5
   // =========================================================================
   if (subLower.includes("khoa học") || subLower === "kh") {
+    const notebookSummary = getLessonNotebookSummary({ grade, subject, lessonTitle });
     const specificCompetencies = [
       `Học sinh giải thích được hiện tượng, nêu được bản chất khoa học và vai trò trong bài: "${lessonTitle}".`,
       "Rèn luyện phương pháp quan sát, thực nghiệm khoa học, tư duy logic và ý thức bảo vệ tài nguyên thiên nhiên, môi trường sống."
     ];
-    const teacherMaterials = [
-      `Kế hoạch bài dạy, bài giảng điện tử (PPTX), video clip thí nghiệm thực tế hoặc dụng cụ thí nghiệm trực quan về "${titleCore}".`,
-      "Phiếu học tập nhóm hướng dẫn các bước quan sát và ghi nhận dữ liệu thực nghiệm."
-    ];
-    const studentMaterials = [
-      `Sách giáo khoa Khoa học ${grade}, vở thực hành Khoa học, bút dạ, bảng nhóm.`
-    ];
+    const teacherMaterials = getSubjectEssentialMaterials("teacher", subject, lessonTitle, grade);
+    const studentMaterials = getSubjectEssentialMaterials("student", subject, lessonTitle, grade);
 
     const activities: LessonActivity[] = [
       {
@@ -640,30 +624,33 @@ function getRawDetailedLessonActivities(params: {
         objective: "Ứng dụng kiến thức khoa học vào bảo vệ môi trường và giữ gìn sức khỏe gia đình.",
         teacherActivity: `• Đặt câu hỏi vận dụng thực tế:
 - "Chúng ta có thể làm gì tại gia đình và địa phương để áp dụng kiến thức bài học này (ví dụ: bảo vệ nguồn nước, tiết kiệm điện, chống xói mòn đất)?"
-• Dặn dò học sinh tiếp tục quan sát thiên nhiên và chuẩn bị bài mới.`,
+• Rút ra ghi nhớ bài học & Hướng dẫn HS ghi bài vào vở:
+- GV chốt lại nội dung cốt lõi của bài học và chiếu/ghi bảng mục Ghi nhớ cho học sinh ghi vào vở:
+★ NỘI DUNG GHI NHỚ (HS GHI BÀI VÀO VỞ):
+${notebookSummary}
+• Dặn dò học sinh tiếp tục quan sát thiên nhiên, chuẩn bị bài mới.`,
         studentActivity: `• Nêu các hành động cụ thể trong sinh hoạt hàng ngày.
+• Rút ra ghi nhớ và ghi chép bài học:
+- 2-3 học sinh đọc to mục Ghi nhớ trước lớp; cả lớp đọc đồng thanh để khắc sâu bài học.
+- Chú ý lắng nghe giáo viên và ghi chép nội dung Tóm tắt ghi nhớ vào vở bài học đầy đủ, sạch đẹp, đúng chính tả.
 • Ghi nhớ lời dặn dò của giáo viên, dọn dẹp phòng học sạch sẽ.`
       }
     ];
 
-    return { specificCompetencies, teacherMaterials, studentMaterials, activities };
+    return { specificCompetencies, teacherMaterials, studentMaterials, activities, notebookSummary };
   }
 
   // =========================================================================
   // 5. MÔN LỊCH SỬ VÀ ĐỊA LÍ - Khối 4, 5
   // =========================================================================
   if (subLower.includes("lịch sử") || subLower.includes("địa lí") || subLower.includes("ls-đl") || subLower === "ls" || subLower === "đl") {
+    const notebookSummary = getLessonNotebookSummary({ grade, subject, lessonTitle });
     const specificCompetencies = [
       `Học sinh trình bày được diễn biến sự kiện lịch sử hoặc đặc điểm địa lí tự nhiên, dân cư, kinh tế trong bài: "${lessonTitle}".`,
       "Biết khai thác lược đồ, bản đồ, tranh ảnh hiện vật lịch sử; bồi dưỡng lòng tự hào dân tộc và tình yêu quê hương đất nước."
     ];
-    const teacherMaterials = [
-      `Kế hoạch bài dạy, bài giảng điện tử (PPTX), bản đồ địa lí Việt Nam, lược đồ trận đánh/sự kiện lịch sử, tranh ảnh hiện vật.`,
-      "Phiếu học tập nhóm, tư liệu lịch sử - địa lí mở rộng."
-    ];
-    const studentMaterials = [
-      `Sách giáo khoa Lịch sử và Địa lí ${grade}, vở bài tập, thước kẻ, bút màu.`
-    ];
+    const teacherMaterials = getSubjectEssentialMaterials("teacher", subject, lessonTitle, grade);
+    const studentMaterials = getSubjectEssentialMaterials("student", subject, lessonTitle, grade);
 
     const activities: LessonActivity[] = [
       {
@@ -714,13 +701,20 @@ function getRawDetailedLessonActivities(params: {
         objective: "Liên hệ trách nhiệm của học sinh đối với việc giữ gìn truyền thống và bảo vệ quê hương.",
         teacherActivity: `• Đặt câu hỏi liên hệ:
 - "Là học sinh tiểu học, em cần làm gì để thể hiện lòng biết ơn các thế hệ cha anh đi trước hoặc góp phần bảo tồn vẻ đẹp của vùng đất này?"
+• Rút ra ghi nhớ bài học & Hướng dẫn HS ghi bài vào vở:
+- GV chốt lại nội dung cốt lõi của bài học và chiếu/ghi bảng mục Ghi nhớ cho học sinh ghi vào vở:
+★ NỘI DUNG GHI NHỚ (HS GHI BÀI VÀO VỞ):
+${notebookSummary}
 • Dặn dò học sinh tìm hiểu thêm thông tin qua sách báo, internet an toàn và chuẩn bị bài mới.`,
         studentActivity: `• Chia sẻ suy nghĩ cá nhân: Nêu quyết tâm chăm ngoan, học giỏi, giữ gìn vệ sinh di tích lịch sử và yêu quý quê hương.
+• Rút ra ghi nhớ và ghi chép bài học:
+- 2-3 học sinh đọc to mục Ghi nhớ trước lớp; cả lớp đọc đồng thanh.
+- Chú ý lắng nghe giáo viên và ghi chép nội dung Tóm tắt ghi nhớ vào vở bài học đầy đủ, sạch đẹp, đúng chính tả.
 • Ghi nhớ lời dặn dò của thầy cô.`
       }
     ];
 
-    return { specificCompetencies, teacherMaterials, studentMaterials, activities };
+    return { specificCompetencies, teacherMaterials, studentMaterials, activities, notebookSummary };
   }
 
   // =========================================================================
@@ -731,13 +725,8 @@ function getRawDetailedLessonActivities(params: {
       `Học sinh nhận biết được các chuẩn mực hành vi đạo đức, ý nghĩa và biểu hiện cụ thể trong bài: "${lessonTitle}".`,
       "Biết phân biệt hành vi đúng - sai, có thái độ đồng tình với điều tốt, không đồng tình với cái xấu; rèn luyện thói quen ứng xử văn minh trong trường học và gia đình."
     ];
-    const teacherMaterials = [
-      `Kế hoạch bài dạy, slide bài giảng điện tử (PPTX), tranh ảnh các tình huống đạo đức trong SGK.`,
-      "Thẻ mặt cười / mặt mếu (hoặc thẻ Xanh / Đỏ) dùng để bày tỏ thái độ, phiếu học tập tình huống."
-    ];
-    const studentMaterials = [
-      `Sách giáo khoa Đạo đức ${grade}, vở bài tập Đạo đức, thẻ bày tỏ ý kiến.`
-    ];
+    const teacherMaterials = getSubjectEssentialMaterials("teacher", subject, lessonTitle, grade);
+    const studentMaterials = getSubjectEssentialMaterials("student", subject, lessonTitle, grade);
 
     const activities: LessonActivity[] = [
       {
@@ -815,7 +804,7 @@ function getRawDetailedLessonActivities(params: {
         `Chủ động, tự tin tham gia hoạt động trải nghiệm theo chủ đề dưới cờ: "${lessonTitle}"; nắm vững kế hoạch thi đua tuần mới của nhà trường và Liên đội.`
       ];
       const teacherMaterials = [
-        "Kế hoạch tuần, sổ theo dõi nền nếp lớp, bài phát động thi đua theo chủ đề tuần của Liên đội và BGH nhà trường.",
+        "Sổ theo dõi nền nếp lớp, bài phát động thi đua theo chủ đề tuần của Liên đội và BGH nhà trường.",
         "Hệ thống âm thanh, micro, cờ Tổ quốc phục vụ nghi lễ Chào cờ."
       ];
       const studentMaterials = [
@@ -889,12 +878,12 @@ function getRawDetailedLessonActivities(params: {
         ...(isAtgtActive ? [`Tích hợp Giáo dục An toàn giao thông (${atgtLabel}): ${atgt.objective}`] : [])
       ];
       const teacherMaterials = [
-        "Sổ chủ nhiệm, bảng tổng hợp điểm thi đua các tổ trong tuần, kế hoạch tuần học tiếp theo.",
+        "Sổ chủ nhiệm, bảng tổng hợp điểm thi đua các tổ trong tuần, phương hướng tuần học tiếp theo.",
         ...(isAtgtActive ? [`Tài liệu Giáo dục An toàn giao thông Lớp ${grade}: Tranh ảnh và quy tắc an toàn "${atgt.title} (Tiết ${atgt.periodInLesson})".`] : [])
       ];
       const studentMaterials = [
-        "Sổ theo dõi của ban cán sự lớp, sổ tay cá nhân, phiếu tự đánh giá rèn luyện.",
-        ...(isAtgtActive ? ["Sách/tài liệu Giáo dục An toàn giao thông tiểu học."] : [])
+        "Sổ theo dõi của ban cán sự lớp, phiếu tự đánh giá rèn luyện cá nhân.",
+        ...(isAtgtActive ? ["Tài liệu minh họa Giáo dục An toàn giao thông."] : [])
       ];
 
       const activities: LessonActivity[] = [
@@ -958,13 +947,8 @@ ${isAtgtActive ? `• Tiếp thu nội dung bài học An toàn giao thông (${a
       `Khám phá kiến thức, rèn luyện kỹ năng thực hành và hình thành thói quen tích cực gắn với chủ đề: "${lessonTitle}".`,
       "Tự tin bày tỏ ý kiến, lắng nghe và hợp tác hiệu quả cùng bạn bè trong các hoạt động trải nghiệm thực tế."
     ];
-    const teacherMaterials = [
-      `Kế hoạch bài dạy, bài giảng điện tử (PPTX), tranh ảnh/video minh họa chủ đề bài học "${titleCore}".`,
-      "Phiếu học tập nhóm, vật liệu trải nghiệm theo chủ đề."
-    ];
-    const studentMaterials = [
-      `Sách giáo khoa/vở bài tập Hoạt động trải nghiệm ${grade}, đồ dùng học tập, vật liệu thủ công.`
-    ];
+    const teacherMaterials = getSubjectEssentialMaterials("teacher", subject, lessonTitle, grade);
+    const studentMaterials = getSubjectEssentialMaterials("student", subject, lessonTitle, grade);
 
     const activities: LessonActivity[] = [
       {
@@ -1017,13 +1001,8 @@ ${isAtgtActive ? `• Tiếp thu nội dung bài học An toàn giao thông (${a
       `Nắm vững các thao tác và kiến thức cơ bản trong bài "${lessonTitle}". Rèn luyện Năng lực số (CV 3456/BGDĐT-GDTH) và tư duy máy tính.`,
       "Biết cách sử dụng thiết bị số an toàn, bảo vệ thông tin cá nhân trên môi trường mạng."
     ];
-    const teacherMaterials = [
-      "Phòng máy vi tính, máy chiếu/ti vi màn hình lớn, bài giảng trực quan, phần mềm thực hành mô phỏng.",
-      "Tài liệu hướng dẫn an toàn thông tin số cho học sinh tiểu học."
-    ];
-    const studentMaterials = [
-      `Sách giáo khoa Tin học Lớp ${grade}, vở thực hành, máy tính thực hành.`
-    ];
+    const teacherMaterials = getSubjectEssentialMaterials("teacher", subject, lessonTitle, grade);
+    const studentMaterials = getSubjectEssentialMaterials("student", subject, lessonTitle, grade);
 
     const activities: LessonActivity[] = [
       {
@@ -1067,16 +1046,13 @@ ${isAtgtActive ? `• Tiếp thu nội dung bài học An toàn giao thông (${a
   }
 
   if (subLower.includes("công nghệ") || subLower === "cn") {
+    const notebookSummary = getLessonNotebookSummary({ grade, subject, lessonTitle });
     const specificCompetencies = [
       `Hiểu cấu tạo, tác dụng và các bước sử dụng/lắp ráp an toàn trong bài: "${lessonTitle}".`,
       "Phát triển tư duy công nghệ, kỹ năng khéo léo và ý thức tiết kiệm năng lượng, an toàn lao động (STEM)."
     ];
-    const teacherMaterials = [
-      "Kế hoạch bài dạy, mô hình trực quan, thiết bị mẫu, video clip hướng dẫn thao tác an toàn."
-    ];
-    const studentMaterials = [
-      `Sách giáo khoa Công nghệ Lớp ${grade}, bộ lắp ghép mô hình kỹ thuật / đồ dùng học tập.`
-    ];
+    const teacherMaterials = getSubjectEssentialMaterials("teacher", subject, lessonTitle, grade);
+    const studentMaterials = getSubjectEssentialMaterials("student", subject, lessonTitle, grade);
 
     const activities: LessonActivity[] = [
       {
@@ -1108,13 +1084,20 @@ ${isAtgtActive ? `• Tiếp thu nội dung bài học An toàn giao thông (${a
         name: "4. Hoạt động Vận dụng (3 đến 5 phút)",
         objective: "Sử dụng đúng cách và an toàn các thiết bị công nghệ trong gia đình.",
         teacherActivity: `• Đặt câu hỏi liên hệ thực tế tại gia đình: "Em làm gì để sử dụng an toàn và tiết kiệm điện?"
+• Rút ra ghi nhớ bài học & Hướng dẫn HS ghi bài vào vở:
+- GV chốt lại kiến thức cốt lõi của bài học và chiếu/ghi bảng mục Ghi nhớ cho học sinh ghi vào vở:
+★ NỘI DUNG GHI NHỚ (HS GHI BÀI VÀO VỞ):
+${notebookSummary}
 • Dặn dò học sinh thu dọn dụng cụ gọn gàng.`,
         studentActivity: `• Nêu các việc làm tiết kiệm điện và an toàn tại nhà.
+• Rút ra ghi nhớ và ghi chép bài học:
+- 2-3 học sinh đọc to mục Ghi nhớ trước lớp; cả lớp đọc đồng thanh.
+- Chú ý lắng nghe giáo viên và ghi chép nội dung Tóm tắt ghi nhớ vào vở bài học đầy đủ, sạch đẹp, đúng chính tả.
 • Thu dọn bộ dụng cụ kỹ thuật ngăn nắp vào hộp.`
       }
     ];
 
-    return { specificCompetencies, teacherMaterials, studentMaterials, activities };
+    return { specificCompetencies, teacherMaterials, studentMaterials, activities, notebookSummary };
   }
 
   if (subLower.includes("thể chất") || subLower.includes("gdtc") || subLower === "td") {
@@ -1122,12 +1105,8 @@ ${isAtgtActive ? `• Tiếp thu nội dung bài học An toàn giao thông (${a
       `Thực hiện đúng kỹ thuật động tác trong bài "${lessonTitle}". Nâng cao thể lực, phản xạ nhanh nhẹn và tính kỷ luật.`,
       "Hình thành thói quen rèn luyện thân thể hàng ngày, biết giữ vệ sinh cá nhân và sân tập an toàn."
     ];
-    const teacherMaterials = [
-      "Sân tập sạch sẽ, an toàn, còi chỉ huy, tranh ảnh kỹ thuật động tác, dụng cụ thể thao (bóng, dây nhảy, nấm chiến thuật)."
-    ];
-    const studentMaterials = [
-      "Trang phục thể thao gọn gàng, giày tập sạch sẽ, nước uống cá nhân."
-    ];
+    const teacherMaterials = getSubjectEssentialMaterials("teacher", subject, lessonTitle, grade);
+    const studentMaterials = getSubjectEssentialMaterials("student", subject, lessonTitle, grade);
 
     const activities: LessonActivity[] = [
       {
@@ -1193,12 +1172,8 @@ ${isAtgtActive ? `• Tiếp thu nội dung bài học An toàn giao thông (${a
       `Nhận biết và ứng dụng các yếu tố tạo hình (đường nét, màu sắc, hình khối, bố cục) trong bài "${lessonTitle}".`,
       "Sáng tạo sản phẩm mĩ thuật độc đáo từ các vật liệu quen thuộc, thân thiện với môi trường (STEM)."
     ];
-    const teacherMaterials = [
-      "Kế hoạch bài dạy, tranh ảnh tác phẩm mĩ thuật mẫu, bài giảng điện tử tương tác, bảng pha màu."
-    ];
-    const studentMaterials = [
-      `Sách giáo khoa Mĩ thuật Lớp ${grade}, giấy vẽ A4, màu vẽ (sáp màu/dạ màu/màu nước), bút chì, tẩy, kéo, hồ dán.`
-    ];
+    const teacherMaterials = getSubjectEssentialMaterials("teacher", subject, lessonTitle, grade);
+    const studentMaterials = getSubjectEssentialMaterials("student", subject, lessonTitle, grade);
 
     const activities: LessonActivity[] = [
       {
@@ -1253,12 +1228,8 @@ ${isAtgtActive ? `• Tiếp thu nội dung bài học An toàn giao thông (${a
     `Nắm vững kiến thức trọng tâm của bài: "${lessonTitle}". Thực hiện đúng các kỹ năng đặc thù môn ${subject} theo chuẩn chương trình GDPT 2018.`,
     "Phát triển năng lực tự chủ, hợp tác và giải quyết vấn đề linh hoạt trong thực tiễn."
   ];
-  const teacherMaterials = [
-    `Kế hoạch bài dạy, bài giảng điện tử tương tác, tranh ảnh minh họa môn ${subject} lớp ${grade}.`
-  ];
-  const studentMaterials = [
-    `Sách giáo khoa môn ${subject} lớp ${grade}, vở ghi bài, đồ dùng học tập cá nhân.`
-  ];
+  const teacherMaterials = getSubjectEssentialMaterials("teacher", subject, lessonTitle, grade);
+  const studentMaterials = getSubjectEssentialMaterials("student", subject, lessonTitle, grade);
 
   const activities: LessonActivity[] = [
     {

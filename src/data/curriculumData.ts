@@ -4,6 +4,8 @@ import { getDetailedEnglishLesson } from "./englishLessonDetails";
 import { getDetailedLessonActivities } from "./detailedActivitiesGenerator";
 import { cleanLessonTitle, normalizeActivityName } from "../utils/lessonTitleHelper";
 import { WEEK_3_GRADE_5_PLANS } from "./week3SamplePlans";
+import { getLessonNotebookSummary } from "./lessonNotebookSummaryHelper";
+import { cleanMaterialsList } from "../utils/materialsHelper";
 
 export interface SubjectCurriculum {
   subject: string;
@@ -243,8 +245,8 @@ export const SAMPLE_LESSON_PLANS: Record<string, LessonPlan> = {
       }
     },
     materials: {
-      teacher: ["Sách giáo khoa, máy chiếu trình chiếu bài thơ, tranh ảnh minh họa hạt nảy mầm."],
-      student: ["Sách giáo khoa Tiếng Việt 5, vở ghi bài."]
+      teacher: ["Máy chiếu trình chiếu bài thơ, tranh ảnh minh họa hạt nảy mầm."],
+      student: ["Tranh ảnh sưu tầm về các loài hoa, hạt giống tự nhiên."]
     },
     activities: [
       {
@@ -306,7 +308,7 @@ export const SAMPLE_LESSON_PLANS: Record<string, LessonPlan> = {
     },
     materials: {
       teacher: ["Phiếu bài tập nhóm, bảng phụ ghi các đoạn văn mẫu."],
-      student: ["Vở bài tập Tiếng Việt 5, bút."]
+      student: ["Thẻ từ ngữ ghi đại từ xưng hô, giấy ghi chú thảo luận nhóm."]
     },
     activities: [
       {
@@ -365,8 +367,8 @@ export const SAMPLE_LESSON_PLANS: Record<string, LessonPlan> = {
       }
     },
     materials: {
-      teacher: ["Bộ đồ dùng dạy học Toán 5, phiếu học tập nhóm."],
-      student: ["Bộ thực hành Toán 5, bảng con, nháp."]
+      teacher: ["Bài giảng điện tử mô phỏng phép cộng phân số, phiếu học tập nhóm."],
+      student: ["Thước thẳng có chia vạch, giấy màu thực hành gấp mảnh phân số."]
     },
     activities: [
       {
@@ -427,7 +429,7 @@ export const SAMPLE_LESSON_PLANS: Record<string, LessonPlan> = {
     },
     materials: {
       teacher: ["Hình ảnh xói mòn đất, ruộng bậc thang, video ngắn về xói mòn đất."],
-      student: ["Giấy A3, bút dạ màu làm việc nhóm."]
+      student: ["Giấy A3, bút màu làm việc nhóm."]
     },
     activities: [
       {
@@ -487,7 +489,7 @@ export const SAMPLE_LESSON_PLANS: Record<string, LessonPlan> = {
     },
     materials: {
       teacher: ["Hình ảnh Thomas Edison, hình ảnh chiếc bóng đèn sợi đốt đầu tiên."],
-      student: ["Sách giáo khoa Công nghệ 5."]
+      student: ["Tranh ảnh, tư liệu sưu tầm về các phát minh của Thomas Edison."]
     },
     activities: [
       {
@@ -510,11 +512,12 @@ export const SAMPLE_LESSON_PLANS: Record<string, LessonPlan> = {
       },
       {
         name: "4. Vận dụng",
-        objective: "Khơi gợi ý tưởng sáng tạo trong học sinh.",
-        teacherActivity: "Hỏi: 'Nếu được sáng chế một đồ vật giúp việc học của em dễ dàng hơn, em sẽ sáng chế thứ gì?'",
-        studentActivity: "Phát biểu tự do: Hộp bút tự động dọn dẹp, bút thông minh viết không mỏi tay, thước kẻ phát sáng."
+        objective: "Khơi gợi ý tưởng sáng tạo trong học sinh và rút ra ghi nhớ bài học.",
+        teacherActivity: "• Hỏi: 'Nếu được sáng chế một đồ vật giúp việc học của em dễ dàng hơn, em sẽ sáng chế thứ gì?'\n• Rút ra ghi nhớ bài học & Hướng dẫn HS ghi bài vào vở:\n- GV chốt lại nội dung cốt lõi của bài học và chiếu/ghi bảng mục Ghi nhớ cho học sinh ghi vào vở:\n★ NỘI DUNG GHI NHỚ (HS GHI BÀI VÀO VỞ):\n1. Nhà sáng chế là người tạo ra những sản phẩm, công nghệ mới phục vụ đời sống xã hội.\n2. Phẩm chất quan trọng: Kiên trì, say mê quan sát, ham học hỏi và không nản lòng trước thất bại.\n3. Tích cực học tập, sáng tạo cải tiến đồ dùng học tập.",
+        studentActivity: "• Phát biểu tự do: Hộp bút tự động dọn dẹp, bút thông minh viết không mỏi tay, thước kẻ phát sáng.\n• 2-3 học sinh đọc to mục Ghi nhớ trước lớp, cả lớp đọc đồng thanh.\n• Lắng nghe GV hướng dẫn và ghi chép nội dung Tóm tắt ghi nhớ vào vở bài học đầy đủ, sạch đẹp, đúng chính tả."
       }
     ],
+    notebookSummary: "1. Nhà sáng chế là người phát minh, tạo ra sản phẩm kĩ thuật, công nghệ mới phục vụ đời sống xã hội (như Thomas Edison phát minh bóng đèn điện, James Watt hoàn thiện máy hơi nước...).\n2. Phẩm chất của nhà sáng chế: Óc quan sát tinh tế, trí tưởng tượng phong phú, niềm say mê khoa học và đặc biệt là đức tính kiên trì, không nản lòng trước thất bại.\n3. Học sinh cần rèn luyện tính tò mò, tích cực tìm hiểu khoa học và sáng tạo cải tiến đồ dùng học tập hàng ngày.",
     postLessonAdjustment: "..........................................................................................................................................................................."
   },
   // Official full-week detailed plans for Grade 5 Week 3 (priority override)
@@ -661,6 +664,10 @@ export function generateFullWeekLessonPlans(
 
     if (sampleKey && SAMPLE_LESSON_PLANS[sampleKey]) {
       const sp = SAMPLE_LESSON_PLANS[sampleKey];
+      const isTargetSubject = (Number(itemGrade) === 4 || Number(itemGrade) === 5) &&
+        (normSub.includes("khoa học") || normSub.includes("lịch sử") || normSub.includes("địa lí") || normSub.includes("địa lý") || normSub.includes("công nghệ") || normSub === "kh" || normSub === "cn" || normSub === "ls" || normSub === "đl");
+      const resolvedNotebookSummary = sp.notebookSummary || (isTargetSubject ? getLessonNotebookSummary({ grade: itemGrade, subject: item.subject, lessonTitle: sp.lessonTitle }) : undefined);
+
       plans.push({
         ...sp,
         id: `plan-${item.id}-${idx}`,
@@ -678,11 +685,26 @@ export function generateFullWeekLessonPlans(
         schoolName: schoolInfo.schoolName,
         departmentName: schoolInfo.departmentName,
         branchName: schoolInfo.branchName,
-        activities: (sp.activities || []).map((act) => ({
-          ...act,
-          name: normalizeActivityName(act.name),
-          objective: "", // Bỏ mục tiêu riêng trong từng hoạt động theo yêu cầu người dùng
-        })),
+        materials: {
+          teacher: cleanMaterialsList(sp.materials?.teacher, "teacher", item.subject, sp.lessonTitle, itemGrade),
+          student: cleanMaterialsList(sp.materials?.student, "student", item.subject, sp.lessonTitle, itemGrade),
+        },
+        notebookSummary: resolvedNotebookSummary,
+        activities: (sp.activities || []).map((act, actIdx, arr) => {
+          let teacherAct = act.teacherActivity;
+          let studentAct = act.studentActivity;
+          if (isTargetSubject && resolvedNotebookSummary && actIdx === arr.length - 1 && !teacherAct.includes("NỘI DUNG GHI NHỚ")) {
+            teacherAct = `${teacherAct}\n• Rút ra ghi nhớ bài học & Hướng dẫn HS ghi bài vào vở:\n- GV chốt lại kiến thức cốt lõi của bài học và chiếu/ghi bảng mục Ghi nhớ cho học sinh ghi vào vở:\n★ NỘI DUNG GHI NHỚ (HS GHI BÀI VÀO VỞ):\n${resolvedNotebookSummary}`;
+            studentAct = `${studentAct}\n• Rút ra ghi nhớ và ghi chép bài học:\n- 2-3 học sinh đọc to mục Ghi nhớ trước lớp, cả lớp đọc đồng thanh.\n- Lắng nghe GV hướng dẫn và ghi chép nội dung Tóm tắt ghi nhớ vào vở bài học đầy đủ, sạch đẹp, đúng chính tả.`;
+          }
+          return {
+            ...act,
+            name: normalizeActivityName(act.name),
+            objective: "", // Bỏ mục tiêu riêng trong từng hoạt động theo yêu cầu người dùng
+            teacherActivity: teacherAct,
+            studentActivity: studentAct,
+          };
+        }),
       });
       return;
     }
@@ -703,6 +725,7 @@ export function generateFullWeekLessonPlans(
     let act4Student = "";
     let musicDetail: any = null;
     let englishDetail: any = null;
+    let detailedRes: any = null;
 
     if (subLower.includes("tiếng anh") || subLower.includes("anh văn") || subLower.includes("ta")) {
       englishDetail = getDetailedEnglishLesson(itemGrade, schoolInfo.week, item.lessonTitle, item.period);
@@ -733,7 +756,7 @@ export function generateFullWeekLessonPlans(
       act4Teacher = musicDetail.activities[3].teacherActivity;
       act4Student = musicDetail.activities[3].studentActivity;
     } else {
-      const detailedRes = getDetailedLessonActivities({
+      detailedRes = getDetailedLessonActivities({
         grade: itemGrade,
         subject: item.subject,
         subSubject: item.subSubject,
@@ -779,6 +802,12 @@ export function generateFullWeekLessonPlans(
       schoolName: schoolInfo.schoolName,
       departmentName: schoolInfo.departmentName,
       branchName: schoolInfo.branchName,
+      notebookSummary: (detailedRes as any)?.notebookSummary || (
+        (Number(itemGrade) === 4 || Number(itemGrade) === 5) &&
+        (subLower.includes("khoa học") || subLower.includes("lịch sử") || subLower.includes("địa lí") || subLower.includes("địa lý") || subLower.includes("công nghệ") || subLower === "kh" || subLower === "cn" || subLower === "ls" || subLower === "đl")
+          ? getLessonNotebookSummary({ grade: itemGrade, subject: item.subject, lessonTitle: finalLessonTitle })
+          : undefined
+      ),
       songTitle: musicDetail ? musicDetail.songTitle : undefined,
       composer: musicDetail ? musicDetail.composer : undefined,
       songLyrics: musicDetail ? musicDetail.songLyrics : undefined,
@@ -799,8 +828,8 @@ export function generateFullWeekLessonPlans(
         integrations: parseKhdhIntegrations(item.integrationNotes)
       },
       materials: {
-        teacher: teacherMaterials,
-        student: studentMaterials
+        teacher: cleanMaterialsList(teacherMaterials, "teacher", item.subject, finalLessonTitle, itemGrade),
+        student: cleanMaterialsList(studentMaterials, "student", item.subject, finalLessonTitle, itemGrade),
       },
       activities: [
         {

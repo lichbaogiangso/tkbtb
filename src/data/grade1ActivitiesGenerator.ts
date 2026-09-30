@@ -61,15 +61,13 @@ export function getGrade1DetailedActivities(params: {
     ];
 
     const teacherMaterials = [
-      `Kế hoạch bài dạy, bài giảng điện tử tương tác minh họa tranh SGK Toán 1 bài: ${lessonTitle}.`,
-      "Bộ đồ dùng dạy Toán 1 của GV: que tính to, bảng gài số, các mô hình khối lập phương, thẻ số từ 0 đến 10, tranh phóng to các bài tập trong SGK.",
+      `Bài giảng điện tử tương tác minh họa bài: ${lessonTitle}.`,
+      "Bộ que tính to, bảng gài số, các mô hình khối lập phương, thẻ số từ 0 đến 10.",
       "Phiếu bài tập mở rộng, phần thưởng bông hoa điểm tốt khích lệ học sinh."
     ];
 
     const studentMaterials = [
-      "Sách giáo khoa Toán 1 (Bộ Kết nối tri thức với cuộc sống), Vở bài tập Toán 1 tập 1.",
-      "Bộ đồ dùng học Toán 1 của học sinh: hộp que tính, bảng gài, các thẻ số 0-10, các hình phẳng (hình vuông, tròn, tam giác, chữ nhật), khối lập phương nhỏ.",
-      "Bảng con, phấn trắng, khăn lau bảng, bút chì, tẩy gôm."
+      "Bộ que tính, bảng gài, các thẻ số 0-10, các hình phẳng (hình vuông, tròn, tam giác, chữ nhật), khối lập phương nhỏ."
     ];
 
     let act2Teacher = "";
@@ -285,15 +283,13 @@ export function getGrade1DetailedActivities(params: {
     ];
 
     const teacherMaterials = [
-      `Kế hoạch bài dạy, bài giảng điện tử (PPTX) phóng to các tranh khởi động, tranh từ ngữ ứng dụng trong SGK Tiếng Việt 1.`,
-      "Bộ chữ biểu diễn của giáo viên (thẻ chữ in hoa, in thường, chữ viết mẫu phóng to 4 ô ly trên bảng phụ), bảng gài lớp.",
-      "Vở Tập viết 1, que chỉ bảng, phần thưởng ngôi sao chăm chỉ."
+      `Bài giảng điện tử (PPTX) phóng to các tranh khởi động, tranh từ ngữ ứng dụng.`,
+      "Bộ chữ biểu diễn của giáo viên (thẻ chữ in hoa, in thường, chữ mẫu trên bảng phụ), bảng gài lớp.",
+      "Que chỉ bảng, phần thưởng ngôi sao chăm chỉ."
     ];
 
     const studentMaterials = [
-      "Sách giáo khoa Tiếng Việt 1 (Tập 1), Vở Tập viết 1 (Tập 1), Vở bài tập Tiếng Việt 1.",
-      "Bộ đồ dùng học Tiếng Việt 1 của học sinh: Bảng gài cá nhân, hộp thẻ chữ cái và dấu thanh.",
-      "Bảng con có kẻ ô ly tiểu học, phấn trắng, khăn lau bảng ẩm, bút chì 2B, tẩy gôm."
+      "Bảng gài cá nhân, hộp thẻ chữ cái và dấu thanh."
     ];
 
     let act1Teacher = "";
@@ -526,13 +522,12 @@ export function getGrade1DetailedActivities(params: {
     ];
 
     const teacherMaterials = [
-      `Kế hoạch bài dạy, bài giảng điện tử (PPTX) phóng to các bức tranh 1, 2, 3, 4 trong SGK Tự nhiên và Xã hội 1.`,
+      `Bài giảng điện tử (PPTX) phóng to các bức tranh tình huống bài học.`,
       "Thẻ mặt cười (việc nên làm), thẻ mặt mếu (việc không nên làm) phục vụ trò chơi bày tỏ ý kiến.",
       "Video ngắn hoặc bài hát chủ đề gần gũi với học sinh lớp 1."
     ];
 
     const studentMaterials = [
-      "Sách giáo khoa Tự nhiên và Xã hội 1 (Bộ Kết nối tri thức với cuộc sống), Vở bài tập TNXH 1.",
       "Thẻ hoa xanh/đỏ hoặc thẻ mặt cười/mặt mếu, bút chì màu."
     ];
 
@@ -630,13 +625,12 @@ export function getGrade1DetailedActivities(params: {
     ];
 
     const teacherMaterials = [
-      `Kế hoạch bài dạy, bài giảng điện tử minh họa các tranh truyện và tình huống trong SGK Đạo đức 1.`,
+      `Bài giảng điện tử minh họa các tranh truyện và tình huống đạo đức.`,
       "Thẻ xanh (tán thành), thẻ đỏ (không tán thành); bộ tranh các bước vệ sinh cá nhân hoặc quy tắc ứng xử.",
       "Bảng khen thưởng 'Bé ngoan lớp 1'."
     ];
 
     const studentMaterials = [
-      "Sách giáo khoa Đạo đức 1 (Bộ Kết nối tri thức với cuộc sống), Vở bài tập Đạo đức 1.",
       "Thẻ hoa xanh/đỏ hoặc thẻ mặt cười/mặt mếu cá nhân."
     ];
 
@@ -847,12 +841,11 @@ export function getGrade1DetailedActivities(params: {
       "Hình thành kỹ năng tự phục vụ, giao tiếp cởi mở và hợp tác thân thiện với bạn bè."
     ];
     const teacherMaterials = [
-      `Kế hoạch bài dạy, bài giảng điện tử minh họa các hoạt động trong SGK Hoạt động trải nghiệm 1.`,
+      `Bài giảng điện tử minh họa các hoạt động trải nghiệm theo chủ đề.`,
       "Vật liệu trải nghiệm đơn giản: giấy màu, hồ dán, kéo an toàn, bút chì màu.",
       "Phiếu đánh giá hoạt động trải nghiệm lớp 1."
     ];
     const studentMaterials = [
-      "Sách giáo khoa Hoạt động trải nghiệm 1, Vở bài tập HĐTN 1.",
       "Hộp bút màu, giấy thủ công, kéo cắt giấy đầu tròn an toàn."
     ];
 
@@ -914,7 +907,7 @@ export function getGrade1DetailedActivities(params: {
       "Hình thành thói quen rèn luyện thân thể, giữ vệ sinh sân tập và an toàn trong tập luyện."
     ];
     const teacherMaterials = [
-      "Kế hoạch bài dạy, còi chỉ huy, tranh phóng to các động tác mẫu trong SGK Giáo dục thể chất 1.",
+      "Còi chỉ huy, tranh phóng to các động tác mẫu chuẩn kỹ thuật.",
       "Sân tập sạch sẽ, an toàn, bóng thể thao hoặc cờ nheo phục vụ trò chơi vận động."
     ];
     const studentMaterials = [
@@ -988,10 +981,10 @@ export function getGrade1DetailedActivities(params: {
       "Thao tác thuần thục với sách giáo khoa và đồ dùng học tập, phát triển năng lực đặc thù môn học."
     ],
     teacherMaterials: [
-      `Kế hoạch bài dạy, giáo cụ trực quan minh họa bài học "${lessonTitle}".`
+      `Bài giảng điện tử tương tác, giáo cụ trực quan minh họa bài học "${lessonTitle}".`
     ],
     studentMaterials: [
-      `Sách giáo khoa, vở bài tập và đồ dùng học tập môn ${subject}.`
+      `Đồ dùng học tập thực hành môn ${subject} theo yêu cầu bài học.`
     ],
     activities: [
       {

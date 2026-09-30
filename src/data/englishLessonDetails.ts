@@ -668,15 +668,13 @@ export function getDetailedEnglishLesson(
   ];
 
   const teacherMaterials = [
-    `Giáo án Tiếng Anh Lớp ${grade} chuẩn CV 2345/BGDĐT.`,
     `Bộ thẻ từ vựng trực quan (Flashcards) các từ vựng: ${rawWordsList}.`,
     `Tệp âm thanh chuẩn (Audio tracks) phát âm giọng bản ngữ và bài giảng số tương tác (PowerPoint/Canva).`,
     `Thiết bị trình chiếu TV/máy chiếu, loa trợ giảng, tranh ảnh chủ đề "${matchedUnit.theme}".`
   ];
 
   const studentMaterials = [
-    `Sách học sinh Tiếng Anh Lớp ${grade}, vở ghi chép, bút chì, bút màu.`,
-    `Bộ thẻ từ vựng mini cá nhân để thực hành trò chơi ghép từ và luyện nói theo cặp.`
+    `Bộ thẻ từ vựng mini cá nhân để thực hành trò chơi ghép từ và luyện nói theo cặp, bút màu vẽ tranh minh họa.`
   ];
 
   const integrationNotes = `Tích hợp Năng lực số (CV 3456): Sử dụng Flashcard số và nghe phát âm audio chuẩn; Tích hợp Học thông qua chơi (Play-based learning) qua trò chơi "${matchedUnit.game}".`;

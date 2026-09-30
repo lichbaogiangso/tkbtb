@@ -37,6 +37,7 @@ import {
   getAuthenticDeckSummary
 } from "../utils/classroomSlideDataHelper";
 import { cleanLessonTitle, normalizeActivityName, cleanSubjectName } from "../utils/lessonTitleHelper";
+import { cleanMaterialsList } from "../utils/materialsHelper";
 
 interface LessonPlanViewProps {
   lessonPlans: LessonPlan[];
@@ -563,10 +564,10 @@ export const LessonPlanView: React.FC<LessonPlanViewProps> = ({
                         {/* II. Đồ dùng dạy học */}
                         <div className="text-xs bg-stone-50 p-2.5 border border-stone-300 flex flex-col sm:flex-row gap-2">
                           <div className="sm:w-1/2">
-                            <strong className="text-black">{isEn ? "Teacher's Aids: " : "Đồ dùng GV: "}</strong> <span className="text-stone-700">{plan.materials?.teacher?.join("; ")}</span>
+                            <strong className="text-black">{isEn ? "Teacher's Aids: " : "Đồ dùng GV: "}</strong> <span className="text-stone-700">{cleanMaterialsList(plan.materials?.teacher, "teacher", plan.subject, plan.lessonTitle, plan.grade).join("; ")}</span>
                           </div>
                           <div className="sm:w-1/2">
-                            <strong className="text-black">{isEn ? "Students' Aids: " : "Đồ dùng HS: "}</strong> <span className="text-stone-700">{plan.materials?.student?.join("; ")}</span>
+                            <strong className="text-black">{isEn ? "Students' Aids: " : "Đồ dùng HS: "}</strong> <span className="text-stone-700">{cleanMaterialsList(plan.materials?.student, "student", plan.subject, plan.lessonTitle, plan.grade).join("; ")}</span>
                           </div>
                         </div>
 
@@ -610,6 +611,28 @@ export const LessonPlanView: React.FC<LessonPlanViewProps> = ({
                             </tbody>
                           </table>
                         </div>
+
+                        {/* Tóm tắt ghi nhớ cốt lõi sau bài học cho HS ghi vở */}
+                        {plan.notebookSummary && (
+                          <div className="bg-amber-50/90 border-2 border-amber-600 p-3.5 space-y-1.5 rounded-xs">
+                            <div className="flex items-center justify-between border-b border-amber-300 pb-1.5">
+                              <div className="flex items-center gap-2">
+                                <span className="bg-amber-600 text-white text-[10px] font-black uppercase px-2 py-0.5 tracking-wider">
+                                  {isEn ? "NOTEBOOK SUMMARY" : "GHI VỞ"}
+                                </span>
+                                <h4 className="font-serif font-black text-amber-950 text-xs uppercase tracking-wide">
+                                  {isEn ? "★ Key Takeaway Summary (For Students to Copy into Notebooks):" : "★ Tóm tắt ghi nhớ nội dung bài học (Dành cho học sinh ghi vào vở):"}
+                                </h4>
+                              </div>
+                              <span className="text-[10px] text-amber-800 italic font-mono font-medium">
+                                {cleanSubjectName(plan.subject)} - {isEn ? `Grade ${plan.grade}` : `Lớp ${plan.grade}`}
+                              </span>
+                            </div>
+                            <div className="text-xs text-amber-950 font-serif leading-relaxed whitespace-pre-line pl-1 font-medium bg-amber-100/40 p-2.5 border border-amber-200 rounded-xs">
+                              {plan.notebookSummary}
+                            </div>
+                          </div>
+                        )}
 
                         {/* IV. Điều chỉnh sau bài dạy */}
                         <div className="text-xs text-stone-600 italic">
@@ -970,10 +993,10 @@ export const LessonPlanView: React.FC<LessonPlanViewProps> = ({
                 </h3>
                 <div className="space-y-1 pl-2">
                   <p className="text-stone-800">
-                    <strong className="text-black">{isEn ? "- Teacher: " : "- Giáo viên: "}</strong> {activePlan.materials.teacher.join("; ")}
+                    <strong className="text-black">{isEn ? "- Teacher: " : "- Giáo viên: "}</strong> {cleanMaterialsList(activePlan.materials?.teacher, "teacher", activePlan.subject, activePlan.lessonTitle, activePlan.grade).join("; ")}
                   </p>
                   <p className="text-stone-800">
-                    <strong className="text-black">{isEn ? "- Students: " : "- Học sinh: "}</strong> {activePlan.materials.student.join("; ")}
+                    <strong className="text-black">{isEn ? "- Students: " : "- Học sinh: "}</strong> {cleanMaterialsList(activePlan.materials?.student, "student", activePlan.subject, activePlan.lessonTitle, activePlan.grade).join("; ")}
                   </p>
                 </div>
               </div>
@@ -1165,6 +1188,55 @@ export const LessonPlanView: React.FC<LessonPlanViewProps> = ({
                   </table>
                 </div>
               </div>
+
+              {/* TÓM TẮT GHI NHỚ NỘI DUNG CỐT LÕI (CHO HỌC SINH GHI VỞ BÀI HỌC) */}
+              {(isEditing || activePlan.notebookSummary || (
+                (Number(activePlan.grade) === 4 || Number(activePlan.grade) === 5) &&
+                (activePlan.subject.toLowerCase().includes("khoa học") ||
+                 activePlan.subject.toLowerCase().includes("lịch sử") ||
+                 activePlan.subject.toLowerCase().includes("địa lí") ||
+                 activePlan.subject.toLowerCase().includes("địa lý") ||
+                 activePlan.subject.toLowerCase().includes("công nghệ") ||
+                 activePlan.subject.toLowerCase() === "kh" ||
+                 activePlan.subject.toLowerCase() === "cn" ||
+                 activePlan.subject.toLowerCase() === "ls" ||
+                 activePlan.subject.toLowerCase() === "đl")
+              )) && (
+                <div className="bg-amber-50/90 border-2 border-amber-600 p-4 space-y-2.5 rounded-xs shadow-[2px_2px_0px_rgba(217,119,6,0.2)]">
+                  <div className="flex items-center justify-between border-b border-amber-300 pb-2">
+                    <div className="flex items-center gap-2">
+                      <span className="bg-amber-600 text-white text-[10px] font-black uppercase px-2 py-0.5 tracking-wider">
+                        {isEn ? "NOTEBOOK SUMMARY" : "GHI VỞ"}
+                      </span>
+                      <h3 className="font-serif font-black text-amber-950 text-xs sm:text-sm uppercase tracking-wide">
+                        {isEn ? "★ Key Takeaway Summary (For Students to Copy into Notebooks):" : "★ Tóm tắt ghi nhớ nội dung bài học (Dành cho học sinh ghi vào vở):"}
+                      </h3>
+                    </div>
+                    <span className="text-xs text-amber-800 italic font-mono font-medium">
+                      {cleanSubjectName(activePlan.subject)} - {isEn ? `Grade ${activePlan.grade}` : `Lớp ${activePlan.grade}`}
+                    </span>
+                  </div>
+
+                  {isEditing ? (
+                    <div className="space-y-1.5">
+                      <label className="text-[10px] font-bold text-amber-900 uppercase block">
+                        {isEn ? "Edit Notebook Summary (Key points for students to copy into notebooks):" : "Nội dung tóm tắt ghi nhớ (Các ý cô đọng cho học sinh chép vào vở bài học):"}
+                      </label>
+                      <textarea
+                        rows={4}
+                        value={editFormData?.notebookSummary || ""}
+                        onChange={(e) => setEditFormData({ ...editFormData!, notebookSummary: e.target.value })}
+                        placeholder={isEn ? "Enter key takeaways for students to copy into notebooks..." : "Nhập các ý tóm tắt ghi nhớ để học sinh ghi vào vở bài học..."}
+                        className="w-full p-2.5 border border-amber-400 bg-white text-xs font-serif text-black leading-relaxed focus:outline-none focus:border-amber-600"
+                      />
+                    </div>
+                  ) : (
+                    <div className="text-xs sm:text-sm text-amber-950 font-serif leading-relaxed whitespace-pre-line pl-1 font-medium bg-amber-100/50 p-3.5 border border-amber-300 rounded-xs">
+                      {activePlan.notebookSummary}
+                    </div>
+                  )}
+                </div>
+              )}
 
               {/* SECTION IV: ĐIỀU CHỈNH SAU BÀI DẠY */}
               <div className="space-y-2 text-xs">

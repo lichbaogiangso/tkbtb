@@ -17,6 +17,8 @@ import { saveAs } from "file-saver";
 import { LessonPlan, ScheduleItem, SchoolInfo, MasterTimetable } from "../types";
 import { DAYS_OF_WEEK, DEFAULT_TEACHERS, isSlotMatchingTeacherOrSubject, getWeekDates, getSpecialistTeacherShortName } from "../data/defaultTimetables";
 import { cleanLessonTitle, normalizeActivityName, cleanSubjectName } from "./lessonTitleHelper";
+import { getLessonNotebookSummary } from "../data/lessonNotebookSummaryHelper";
+import { cleanMaterialsList } from "./materialsHelper";
 
 /**
  * Universal robust file download helper for Web & sandboxed iFrame environments
@@ -150,6 +152,79 @@ function createActivityCellParagraphs(
   });
 
   return paragraphs.length > 0 ? paragraphs : [new Paragraph({ text: "" })];
+}
+
+/**
+ * Tạo khối bảng Tóm tắt ghi nhớ (cho học sinh ghi vào vở bài học) trong Word (.docx)
+ * Chuẩn đẹp, viền đóng khung cam/hổ phách sang trọng, cỡ chữ rõ ràng chuẩn Nghị định 30
+ */
+function buildNotebookSummaryDocxElements(
+  summary: string,
+  font: string,
+  baseSize: number,
+  smallSize: number,
+  tableWidth: number
+): any[] {
+  const elements: any[] = [];
+  elements.push(new Paragraph({ text: "", spacing: { before: 80 } }));
+
+  const summaryParagraphs: Paragraph[] = [
+    new Paragraph({
+      spacing: { after: 60 },
+      children: [
+        new TextRun({
+          text: "★ NỘI DUNG TÓM TẮT GHI NHỚ (HỌC SINH GHI BÀI VÀO VỞ):",
+          bold: true,
+          color: "92400E",
+          font,
+          size: baseSize,
+        }),
+      ],
+    }),
+  ];
+
+  const lines = summary.split("\n").filter((l) => l.trim().length > 0);
+  lines.forEach((line) => {
+    summaryParagraphs.push(
+      new Paragraph({
+        spacing: { before: 30, after: 30 },
+        indent: { left: 240 },
+        children: [
+          new TextRun({
+            text: line.trim(),
+            font,
+            size: baseSize - 0.5,
+            color: "451A03",
+          }),
+        ],
+      })
+    );
+  });
+
+  const summaryTable = new Table({
+    width: { size: tableWidth, type: WidthType.DXA },
+    borders: {
+      top: { style: BorderStyle.SINGLE, size: 12, color: "D97706" },
+      bottom: { style: BorderStyle.SINGLE, size: 12, color: "D97706" },
+      left: { style: BorderStyle.SINGLE, size: 24, color: "D97706" },
+      right: { style: BorderStyle.SINGLE, size: 12, color: "D97706" },
+    },
+    rows: [
+      new TableRow({
+        children: [
+          new TableCell({
+            width: { size: tableWidth, type: WidthType.DXA },
+            shading: { fill: "FEF3C7" },
+            margins: { top: 120, bottom: 120, left: 180, right: 180 },
+            children: summaryParagraphs,
+          }),
+        ],
+      }),
+    ],
+  });
+
+  elements.push(summaryTable);
+  return elements;
 }
 
 // Vietnam Administrative Document Margins (Standard Nghị định 30/2020/NĐ-CP)
@@ -1638,12 +1713,14 @@ export async function exportLessonPlansDocx(
         children: [new TextRun({ text: "II. ĐỒ DÙNG DẠY HỌC", bold: true, color: "0F172A", font, size: baseSize })],
       })
     );
+    const docxTeacherMaterials = cleanMaterialsList(plan.materials?.teacher, "teacher", plan.subject, plan.lessonTitle, plan.grade);
+    const docxStudentMaterials = cleanMaterialsList(plan.materials?.student, "student", plan.subject, plan.lessonTitle, plan.grade);
     docChildren.push(
       new Paragraph({
         spacing: { after: 20 },
         children: [
           new TextRun({ text: "- Giáo viên: ", bold: true, font, size: baseSize }),
-          new TextRun({ text: plan.materials.teacher.join("; "), font, size: baseSize }),
+          new TextRun({ text: docxTeacherMaterials.join("; "), font, size: baseSize }),
         ],
       })
     );
@@ -1652,7 +1729,7 @@ export async function exportLessonPlansDocx(
         spacing: { after: 30 },
         children: [
           new TextRun({ text: "- Học sinh: ", bold: true, font, size: baseSize }),
-          new TextRun({ text: plan.materials.student.join("; "), font, size: baseSize }),
+          new TextRun({ text: docxStudentMaterials.join("; "), font, size: baseSize }),
         ],
       })
     );
@@ -1791,6 +1868,25 @@ export async function exportLessonPlansDocx(
         rows: activityTableRows,
       })
     );
+
+    // Tóm tắt ghi nhớ cốt lõi sau mỗi bài cho HS ghi bài (Khoa học, Lịch sử và Địa lí, Công nghệ)
+    const resolvedSummary = plan.notebookSummary || (
+      (Number(plan.grade) === 4 || Number(plan.grade) === 5) &&
+      (plan.subject.toLowerCase().includes("khoa học") ||
+       plan.subject.toLowerCase().includes("lịch sử") ||
+       plan.subject.toLowerCase().includes("địa lí") ||
+       plan.subject.toLowerCase().includes("địa lý") ||
+       plan.subject.toLowerCase().includes("công nghệ") ||
+       plan.subject.toLowerCase() === "kh" ||
+       plan.subject.toLowerCase() === "cn" ||
+       plan.subject.toLowerCase() === "ls" ||
+       plan.subject.toLowerCase() === "đl")
+        ? getLessonNotebookSummary({ grade: plan.grade, subject: plan.subject, lessonTitle: plan.lessonTitle })
+        : undefined
+    );
+    if (resolvedSummary) {
+      docChildren.push(...buildNotebookSummaryDocxElements(resolvedSummary, font, baseSize, smallSize, tableWidth));
+    }
 
     // Section IV: Post Lesson Adjustment
     docChildren.push(new Paragraph({ text: "", spacing: { before: 80 } }));
@@ -2145,12 +2241,14 @@ export async function exportCombinedAllInOneDocx(
         children: [new TextRun({ text: "II. ĐỒ DÙNG DẠY HỌC", bold: true, font, size: baseSize })],
       })
     );
+    const comboTeacherMaterials = cleanMaterialsList(plan.materials?.teacher, "teacher", plan.subject, plan.lessonTitle, plan.grade);
+    const comboStudentMaterials = cleanMaterialsList(plan.materials?.student, "student", plan.subject, plan.lessonTitle, plan.grade);
     docChildren.push(
       new Paragraph({
         spacing: { after: 20 },
         children: [
           new TextRun({ text: "- Giáo viên: ", bold: true, font, size: baseSize }),
-          new TextRun({ text: plan.materials.teacher.join("; "), font, size: baseSize }),
+          new TextRun({ text: comboTeacherMaterials.join("; "), font, size: baseSize }),
         ],
       })
     );
@@ -2159,7 +2257,7 @@ export async function exportCombinedAllInOneDocx(
         spacing: { after: 30 },
         children: [
           new TextRun({ text: "- Học sinh: ", bold: true, font, size: baseSize }),
-          new TextRun({ text: plan.materials.student.join("; "), font, size: baseSize }),
+          new TextRun({ text: comboStudentMaterials.join("; "), font, size: baseSize }),
         ],
       })
     );
@@ -2243,6 +2341,25 @@ export async function exportCombinedAllInOneDocx(
     });
 
     docChildren.push(new Table({ width: { size: tableWidth, type: WidthType.DXA }, rows: activityRows }));
+
+    // Tóm tắt ghi nhớ cốt lõi sau mỗi bài cho HS ghi bài (Khoa học, Lịch sử và Địa lí, Công nghệ)
+    const resolvedComboSummary = plan.notebookSummary || (
+      (Number(plan.grade) === 4 || Number(plan.grade) === 5) &&
+      (plan.subject.toLowerCase().includes("khoa học") ||
+       plan.subject.toLowerCase().includes("lịch sử") ||
+       plan.subject.toLowerCase().includes("địa lí") ||
+       plan.subject.toLowerCase().includes("địa lý") ||
+       plan.subject.toLowerCase().includes("công nghệ") ||
+       plan.subject.toLowerCase() === "kh" ||
+       plan.subject.toLowerCase() === "cn" ||
+       plan.subject.toLowerCase() === "ls" ||
+       plan.subject.toLowerCase() === "đl")
+        ? getLessonNotebookSummary({ grade: plan.grade, subject: plan.subject, lessonTitle: plan.lessonTitle })
+        : undefined
+    );
+    if (resolvedComboSummary) {
+      docChildren.push(...buildNotebookSummaryDocxElements(resolvedComboSummary, font, baseSize, smallSize, tableWidth));
+    }
 
     // IV. Điều chỉnh
     docChildren.push(new Paragraph({ text: "", spacing: { before: 60 } }));
@@ -2673,12 +2790,15 @@ export async function exportWeeklyKHBDWithLBGFirstPageDocx(
           children: [new TextRun({ text: "II. ĐỒ DÙNG DẠY HỌC", bold: true, font, size: baseSize })],
         })
       );
+      const weeklyTeacherMaterials = cleanMaterialsList(plan.materials?.teacher, "teacher", plan.subject, plan.lessonTitle, plan.grade);
+      const weeklyStudentMaterials = cleanMaterialsList(plan.materials?.student, "student", plan.subject, plan.lessonTitle, plan.grade);
+
       docChildren.push(
         new Paragraph({
           spacing: { after: 20 },
           children: [
             new TextRun({ text: "- Giáo viên: ", bold: true, font, size: baseSize }),
-            new TextRun({ text: plan.materials.teacher.join("; "), font, size: baseSize }),
+            new TextRun({ text: weeklyTeacherMaterials.join("; "), font, size: baseSize }),
           ],
         })
       );
@@ -2687,7 +2807,7 @@ export async function exportWeeklyKHBDWithLBGFirstPageDocx(
           spacing: { after: 30 },
           children: [
             new TextRun({ text: "- Học sinh: ", bold: true, font, size: baseSize }),
-            new TextRun({ text: plan.materials.student.join("; "), font, size: baseSize }),
+            new TextRun({ text: weeklyStudentMaterials.join("; "), font, size: baseSize }),
           ],
         })
       );
@@ -2809,6 +2929,25 @@ export async function exportWeeklyKHBDWithLBGFirstPageDocx(
       });
 
       docChildren.push(new Table({ width: { size: tableWidth, type: WidthType.DXA }, rows: activityRows }));
+
+      // Tóm tắt ghi nhớ cốt lõi sau mỗi bài cho HS ghi bài (Khoa học, Lịch sử và Địa lí, Công nghệ)
+      const resolvedWeeklySummary = plan.notebookSummary || (
+        (Number(plan.grade) === 4 || Number(plan.grade) === 5) &&
+        (plan.subject.toLowerCase().includes("khoa học") ||
+         plan.subject.toLowerCase().includes("lịch sử") ||
+         plan.subject.toLowerCase().includes("địa lí") ||
+         plan.subject.toLowerCase().includes("địa lý") ||
+         plan.subject.toLowerCase().includes("công nghệ") ||
+         plan.subject.toLowerCase() === "kh" ||
+         plan.subject.toLowerCase() === "cn" ||
+         plan.subject.toLowerCase() === "ls" ||
+         plan.subject.toLowerCase() === "đl")
+          ? getLessonNotebookSummary({ grade: plan.grade, subject: plan.subject, lessonTitle: plan.lessonTitle })
+          : undefined
+      );
+      if (resolvedWeeklySummary) {
+        docChildren.push(...buildNotebookSummaryDocxElements(resolvedWeeklySummary, font, baseSize, smallSize, tableWidth));
+      }
 
       // IV. Điều chỉnh sau bài dạy
       docChildren.push(new Paragraph({ text: "", spacing: { before: 60 } }));
