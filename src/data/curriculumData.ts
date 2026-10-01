@@ -6,6 +6,7 @@ import { cleanLessonTitle, normalizeActivityName, isLaterPeriodOfMultiPeriodLess
 import { WEEK_3_GRADE_5_PLANS } from "./week3SamplePlans";
 import { getLessonNotebookSummary } from "./lessonNotebookSummaryHelper";
 import { cleanMaterialsList } from "../utils/materialsHelper";
+import { getDisasterLessonForWeek } from "./disasterCurriculum";
 
 export interface SubjectCurriculum {
   subject: string;
@@ -639,6 +640,52 @@ export function generateFullWeekLessonPlans(
 
     // Check if we have an existing sample plan STRICTLY for this grade AND week AND matching subject & curriculum period
     const normSub = item.subject.toLowerCase();
+
+    // Xử lý bài dạy Phòng ngừa và giảm nhẹ rủi ro thảm họa (UBND xã Tân Thạnh)
+    const isDisasterSubject = normSub.includes("thảm họa") || normSub.includes("rủi ro") || normSub.includes("gnrrth");
+    if (isDisasterSubject) {
+      const dLesson = getDisasterLessonForWeek(schoolInfo.week);
+      if (dLesson) {
+        plans.push({
+          id: `plan-${item.id}-${idx}`,
+          grade: itemGrade,
+          subject: "PHÒNG NGỪA VÀ GIẢM NHẸ RỦI RO THẢM HỌA",
+          subSubject: "Kĩ năng phòng chống thiên tai",
+          lessonTitle: dLesson.title,
+          session: item.session,
+          timetablePeriod: item.period,
+          periodNumber: currentPeriodInDay,
+          curriculumPeriod: dLesson.lessonNumber,
+          week: schoolInfo.week,
+          dayOfWeek: item.day,
+          dateStr: item.dateStr || schoolInfo.startDate,
+          teacherName: item.specialistTeacherName || schoolInfo.teacherName,
+          className: item.className || schoolInfo.className,
+          schoolName: "UBND XÃ TÂN THẠNH - TRƯỜNG TIỂU HỌC TÂN THẠNH",
+          departmentName: schoolInfo.departmentName,
+          branchName: schoolInfo.branchName,
+          objectives: {
+            specificCompetencies: dLesson.specificCompetencies,
+            generalCompetencies: dLesson.generalCompetencies,
+            qualities: dLesson.qualities,
+            integrations: ["Kế hoạch bài dạy tích hợp Phòng ngừa và Giảm nhẹ rủi ro thảm họa - UBND xã Tân Thạnh"]
+          },
+          materials: {
+            teacher: cleanMaterialsList(dLesson.teacherMaterials, "teacher", item.subject, dLesson.title, itemGrade),
+            student: cleanMaterialsList(dLesson.studentMaterials, "student", item.subject, dLesson.title, itemGrade),
+          },
+          activities: dLesson.activities.map((act) => ({
+            ...act,
+            name: normalizeActivityName(act.name),
+            objective: "",
+          })),
+          notebookSummary: dLesson.notebookSummary,
+          postLessonAdjustment: "",
+        });
+        return;
+      }
+    }
+
     const sampleKey = (!isSpecialSubject && Number(itemGrade) !== 1) ? Object.keys(SAMPLE_LESSON_PLANS).find(k => {
       const sp = SAMPLE_LESSON_PLANS[k];
       if (sp.grade !== itemGrade) return false;

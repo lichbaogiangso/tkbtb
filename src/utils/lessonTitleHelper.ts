@@ -97,6 +97,7 @@ export function cleanSubjectName(subject: string | undefined | null): string {
   if (lower === "mĩ thuật" || lower === "mt") return "Mĩ thuật";
   if (lower === "giáo dục thể chất" || lower === "gdtc") return "Giáo dục thể chất";
   if (lower.includes("kĩ năng sống") || lower.includes("kỹ năng sống") || lower === "kns") return "Kĩ năng sống";
+  if (lower.includes("thảm họa") || lower.includes("tham hoa") || lower.includes("rủi ro") || lower.includes("gnrrth")) return "Phòng ngừa và giảm nhẹ rủi ro thảm họa";
 
   return s;
 }

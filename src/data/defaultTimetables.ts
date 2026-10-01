@@ -4,6 +4,12 @@ import { getDetailedEnglishLesson } from "./englishLessonDetails";
 import { getGradeCurriculumLesson } from "./gradeCurriculums";
 import { cleanLessonTitle } from "../utils/lessonTitleHelper";
 import { getShlAtgtLessonTitleForLbg } from "./atgtCurriculum";
+import {
+  getDisasterLessonForWeek,
+  isDisasterCurriculumActive,
+  DISASTER_SUBJECT_TITLE,
+  DISASTER_INTEGRATION_NOTE,
+} from "./disasterCurriculum";
 
 export interface TeacherInfo {
   id: string;
@@ -473,6 +479,11 @@ export function getSubjectCategory(raw: string, day: DayOfWeek, period: number):
     return "GDDP";
   }
 
+  // 17b. Phòng ngừa và giảm nhẹ rủi ro thảm họa
+  if (cUpper.includes("THẢM HỌA") || cUpper.includes("THAM HOA") || cUpper.includes("GNRRTH") || cUpper.includes("RỦI RO")) {
+    return "GNRRTH";
+  }
+
   // 18. Tiếng Việt chính khóa
   if (clean === "TV" || clean.startsWith("TV ") || cLower.includes("tiếng việt") || cLower === "tv") {
     return "TV";
@@ -560,6 +571,51 @@ export function generateScheduleForClass(
           pInW
         );
         if (item) items.push(item);
+      }
+    }
+
+    // Bổ sung đồng bộ LBG và KHBD: Phòng ngừa và giảm nhẹ rủi ro thảm họa
+    // Thực hiện vào ngày Thứ Sáu hàng tuần trước tiết HĐTN (SHL), bắt đầu từ Tuần thứ 6
+    if (day === "Thứ Sáu" && isDisasterCurriculumActive(week)) {
+      const dLesson = getDisasterLessonForWeek(week);
+      if (dLesson) {
+        const alreadyHasDisaster = items.some(
+          (it) => it.day === "Thứ Sáu" && (it.subject.includes("THẢM HỌA") || it.subject.includes("RỦI RO"))
+        );
+        if (!alreadyHasDisaster) {
+          const shlIdx = items.findIndex(
+            (it) => it.day === "Thứ Sáu" && it.session === "Sáng" && (
+              it.lessonTitle.toLowerCase().includes("shl") ||
+              it.lessonTitle.toLowerCase().includes("sinh hoạt lớp") ||
+              it.subject.toLowerCase().includes("shl") ||
+              it.subSubject?.toLowerCase().includes("sinh hoạt lớp")
+            )
+          );
+          if (shlIdx !== -1) {
+            const shlItem = items[shlIdx];
+            const disasterPeriod = shlItem.period; // Tiết ngay trước SHL
+            shlItem.period = disasterPeriod + 1; // Đẩy tiết SHL ra sau
+
+            const disasterItem: ScheduleItem = {
+              id: `item-friday-disaster-${targetClass}-${week}`,
+              day: "Thứ Sáu",
+              dateStr: dates[dIdx],
+              session: "Sáng",
+              period: disasterPeriod,
+              subject: DISASTER_SUBJECT_TITLE,
+              subSubject: "Kĩ năng phòng chống thiên tai",
+              curriculumPeriod: dLesson.lessonNumber,
+              lessonTitle: dLesson.title,
+              integrationNotes: DISASTER_INTEGRATION_NOTE,
+              note: "Tài liệu GNRRTH Tân Thạnh",
+              teacherName: teacherName,
+              className: targetClass,
+              isSpecialistPeriod: false,
+            };
+
+            items.splice(shlIdx, 0, disasterItem);
+          }
+        }
       }
     }
   });
@@ -952,6 +1008,28 @@ export function mapRawSubjectToScheduleItem(
     lessonTitle = `Tài liệu Giáo dục địa phương tuần ${week}`;
     curriculumPeriod = `GDĐP${week}`;
     integrationNotes = "Giáo dục truyền thống văn hóa quê hương";
+  }
+
+  // 14b. PHÒNG NGỪA VÀ GIẢM NHẸ RỦI RO THẢM HỌA
+  else if (
+    clean.toUpperCase().includes("THẢM HỌA") ||
+    clean.toUpperCase().includes("THAM HOA") ||
+    clean.toUpperCase().includes("GNRRTH") ||
+    clean.toUpperCase().includes("RỦI RO THIÊN TAI") ||
+    clean.toUpperCase().includes("RỦI RO THẢM HỌA")
+  ) {
+    subject = DISASTER_SUBJECT_TITLE;
+    subSubject = "Kĩ năng phòng chống thiên tai";
+    const dLesson = getDisasterLessonForWeek(week);
+    if (dLesson) {
+      lessonTitle = dLesson.title;
+      curriculumPeriod = dLesson.lessonNumber;
+    } else {
+      lessonTitle = "Bài 1: Hiểm họa và Thảm họa";
+      curriculumPeriod = 1;
+    }
+    integrationNotes = DISASTER_INTEGRATION_NOTE;
+    note = "Tài liệu GNRRTH Tân Thạnh";
   }
 
   // 15. TĂNG CƯỜNG TIẾNG VIỆT (TCTV, Luyện TV)
