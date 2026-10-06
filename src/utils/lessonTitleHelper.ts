@@ -113,36 +113,29 @@ export function normalizeActivityName(name: string | undefined | null): string {
   if (!name) return "";
   let res = name.trim();
 
-  // Khởi động -> Hoạt động mở đầu
-  res = res.replace(/hoạt động khởi động/gi, "Hoạt động mở đầu");
-  res = res.replace(/khởi động/gi, "Hoạt động mở đầu");
+  // Bỏ dấu sao ★ hoặc * ở đầu
+  res = res.replace(/^[★\*\s•\-_]+/, "").trim();
 
-  // Khám phá -> Hình thành kiến thức mới
-  res = res.replace(/hoạt động khám phá/gi, "Hình thành kiến thức mới");
-  res = res.replace(/khám phá/gi, "Hình thành kiến thức mới");
-
-  // Vận dụng -> Vận dụng & trải nghiệm
-  res = res.replace(/vận dụng\s*(&|và|\/)\s*trải nghiệm/gi, "Vận dụng & trải nghiệm");
-  res = res.replace(/vận dụng\s*(&|và|\/)\s*mở rộng/gi, "Vận dụng & trải nghiệm");
-  res = res.replace(/vận dụng\s*-\s*trưng bày sản phẩm/gi, "Vận dụng & trải nghiệm - Trưng bày sản phẩm");
-  res = res.replace(/hoạt động vận dụng/gi, "Vận dụng & trải nghiệm");
-  res = res.replace(/\bvận dụng\b/gi, "Vận dụng & trải nghiệm");
-
-  // Xử lý các trùng lặp do thay thế
-  res = res.replace(/hoạt động hoạt động mở đầu/gi, "Hoạt động mở đầu");
-  res = res.replace(/hoạt động hình thành kiến thức mới/gi, "Hình thành kiến thức mới");
-  res = res.replace(/hình thành kiến thức mới \/ hình thành kiến thức mới/gi, "Hình thành kiến thức mới");
-  res = res.replace(/vận dụng & trải nghiệm & trải nghiệm/gi, "Vận dụng & trải nghiệm");
-
-  // Chuẩn hóa tiền tố số 1, 2, 3, 4
-  if (/^1\./.test(res)) {
-    res = res.replace(/^1\.\s*(hoạt động mở đầu|hoạt động khởi động|khởi động)/i, "1. Hoạt động mở đầu");
-  } else if (/^2\./.test(res)) {
-    res = res.replace(/^2\.\s*(hình thành kiến thức mới|khám phá|hoạt động khám phá)/i, "2. Hình thành kiến thức mới");
-  } else if (/^3\./.test(res)) {
-    res = res.replace(/^3\.\s*(luyện tập\s*[-–\/]?\s*thực hành|luyện tập)/i, "3. Luyện tập - Thực hành");
-  } else if (/^4\./.test(res)) {
-    res = res.replace(/^4\.\s*(vận dụng\s*(&|và|\/|-)?\s*trải nghiệm|vận dụng)/i, "4. Vận dụng & trải nghiệm");
+  // Chuẩn hóa tên hoạt động theo mẫu KHBD Tuần 5
+  if (/^1\./.test(res) || /khởi động|mở đầu/i.test(res)) {
+    const timeMatch = res.match(/\(\s*\d+\s*phút\s*\)/i);
+    const timeStr = timeMatch ? ` ${timeMatch[0]}` : "";
+    return `1. Hoạt động mở đầu${timeStr}`;
+  }
+  if (/^2\./.test(res) || /khám phá|hình thành kiến thức/i.test(res)) {
+    const timeMatch = res.match(/\(\s*\d+\s*phút\s*\)/i);
+    const timeStr = timeMatch ? ` ${timeMatch[0]}` : "";
+    return `2. Hoạt động hình thành kiến thức${timeStr}`;
+  }
+  if (/^3\./.test(res) || /luyện tập|thực hành/i.test(res)) {
+    const timeMatch = res.match(/\(\s*\d+\s*phút\s*\)/i);
+    const timeStr = timeMatch ? ` ${timeMatch[0]}` : "";
+    return `3. Hoạt động luyện tập thực hành${timeStr}`;
+  }
+  if (/^4\./.test(res) || /vận dụng|trải nghiệm/i.test(res)) {
+    const timeMatch = res.match(/\(\s*\d+\s*phút\s*\)/i);
+    const timeStr = timeMatch ? ` ${timeMatch[0]}` : "";
+    return `4. Hoạt động vận dụng trải nghiệm${timeStr}`;
   }
 
   return res;

@@ -668,7 +668,10 @@ export function generateFullWeekLessonPlans(
             specificCompetencies: dLesson.specificCompetencies,
             generalCompetencies: dLesson.generalCompetencies,
             qualities: dLesson.qualities,
-            integrations: ["Kế hoạch bài dạy tích hợp Phòng ngừa và Giảm nhẹ rủi ro thảm họa - UBND xã Tân Thạnh"]
+            integrations: {
+              lifeSkills: "Kế hoạch bài dạy tích hợp Phòng ngừa và Giảm nhẹ rủi ro thảm họa - UBND xã Tân Thạnh (Biên soạn theo CV 2345/BGDĐT)",
+              environment: "Kỹ năng thích ứng và phòng ngừa giảm nhẹ rủi ro thiên tai, hiểm họa tự nhiên",
+            }
           },
           materials: {
             teacher: cleanMaterialsList(dLesson.teacherMaterials, "teacher", item.subject, dLesson.title, itemGrade),

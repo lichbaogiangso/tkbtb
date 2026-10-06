@@ -1759,40 +1759,66 @@ export async function exportLessonPlansDocx(
         children: [
           new TableCell({
             width: { size: colHalfWidth, type: WidthType.DXA },
-            shading: { fill: "1E3A8A" },
-            children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: "HOẠT ĐỘNG CỦA GIÁO VIÊN", bold: true, color: "FFFFFF", font, size: baseSize })] })],
+            borders: {
+              top: { style: BorderStyle.SINGLE, size: 4, color: "000000" },
+              bottom: { style: BorderStyle.SINGLE, size: 4, color: "000000" },
+              left: { style: BorderStyle.SINGLE, size: 4, color: "000000" },
+              right: { style: BorderStyle.SINGLE, size: 4, color: "000000" },
+            },
+            children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: "HOẠT ĐỘNG CỦA GIÁO VIÊN", bold: true, color: "000000", font, size: baseSize })] })],
           }),
           new TableCell({
             width: { size: colHalfWidth, type: WidthType.DXA },
-            shading: { fill: "1E3A8A" },
-            children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: "HOẠT ĐỘNG CỦA HỌC SINH", bold: true, color: "FFFFFF", font, size: baseSize })] })],
+            borders: {
+              top: { style: BorderStyle.SINGLE, size: 4, color: "000000" },
+              bottom: { style: BorderStyle.SINGLE, size: 4, color: "000000" },
+              left: { style: BorderStyle.SINGLE, size: 4, color: "000000" },
+              right: { style: BorderStyle.SINGLE, size: 4, color: "000000" },
+            },
+            children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: "HOẠT ĐỘNG CỦA HỌC SINH", bold: true, color: "000000", font, size: baseSize })] })],
           }),
         ],
       }),
     ];
 
-    plan.activities.forEach((act) => {
+    plan.activities.forEach((act, actIdx) => {
+      const isFirst = actIdx === 0;
+      const isLast = actIdx === plan.activities.length - 1;
       const teacherParagraphs: Paragraph[] = [
         new Paragraph({
-          spacing: { after: 30 },
-          children: [new TextRun({ text: normalizeActivityName(act.name), bold: true, color: "1E40AF", font, size: baseSize })],
+          spacing: { before: isFirst ? 20 : 100, after: 20 },
+          children: [new TextRun({ text: normalizeActivityName(act.name), bold: true, color: "000000", font, size: baseSize })],
         }),
         ...createActivityCellParagraphs(act.teacherActivity, font, baseSize)
       ];
 
       const studentParagraphs: Paragraph[] = [
+        ...(isFirst ? [] : [new Paragraph({ spacing: { before: 100 } })]),
         ...createActivityCellParagraphs(act.studentActivity, font, baseSize)
       ];
 
       activityTableRows.push(
         new TableRow({
+          cantSplit: false,
           children: [
             new TableCell({
               width: { size: colHalfWidth, type: WidthType.DXA },
+              borders: {
+                top: { style: BorderStyle.NONE },
+                bottom: isLast ? { style: BorderStyle.SINGLE, size: 4, color: "000000" } : { style: BorderStyle.NONE },
+                left: { style: BorderStyle.SINGLE, size: 4, color: "000000" },
+                right: { style: BorderStyle.SINGLE, size: 4, color: "000000" },
+              },
               children: teacherParagraphs,
             }),
             new TableCell({
               width: { size: colHalfWidth, type: WidthType.DXA },
+              borders: {
+                top: { style: BorderStyle.NONE },
+                bottom: isLast ? { style: BorderStyle.SINGLE, size: 4, color: "000000" } : { style: BorderStyle.NONE },
+                left: { style: BorderStyle.SINGLE, size: 4, color: "000000" },
+                right: { style: BorderStyle.SINGLE, size: 4, color: "000000" },
+              },
               children: studentParagraphs,
             }),
           ],
@@ -1803,6 +1829,14 @@ export async function exportLessonPlansDocx(
     docChildren.push(
       new Table({
         width: { size: tableWidth, type: WidthType.DXA },
+        borders: {
+          top: { style: BorderStyle.SINGLE, size: 4, color: "000000" },
+          bottom: { style: BorderStyle.SINGLE, size: 4, color: "000000" },
+          left: { style: BorderStyle.SINGLE, size: 4, color: "000000" },
+          right: { style: BorderStyle.SINGLE, size: 4, color: "000000" },
+          insideVertical: { style: BorderStyle.SINGLE, size: 4, color: "000000" },
+          insideHorizontal: { style: BorderStyle.NONE },
+        },
         rows: activityTableRows,
       })
     );
@@ -2236,34 +2270,68 @@ export async function exportCombinedAllInOneDocx(
       new TableRow({
         tableHeader: true,
         children: [
-          new TableCell({ width: { size: colHalfWidth, type: WidthType.DXA }, shading: { fill: "1E3A8A" }, children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: "HOẠT ĐỘNG CỦA GIÁO VIÊN", bold: true, color: "FFFFFF", font, size: baseSize })] })] }),
-          new TableCell({ width: { size: colHalfWidth, type: WidthType.DXA }, shading: { fill: "1E3A8A" }, children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: "HOẠT ĐỘNG CỦA HỌC SINH", bold: true, color: "FFFFFF", font, size: baseSize })] })] }),
+          new TableCell({
+            width: { size: colHalfWidth, type: WidthType.DXA },
+            borders: {
+              top: { style: BorderStyle.SINGLE, size: 4, color: "000000" },
+              bottom: { style: BorderStyle.SINGLE, size: 4, color: "000000" },
+              left: { style: BorderStyle.SINGLE, size: 4, color: "000000" },
+              right: { style: BorderStyle.SINGLE, size: 4, color: "000000" },
+            },
+            children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: "HOẠT ĐỘNG CỦA GIÁO VIÊN", bold: true, color: "000000", font, size: baseSize })] })]
+          }),
+          new TableCell({
+            width: { size: colHalfWidth, type: WidthType.DXA },
+            borders: {
+              top: { style: BorderStyle.SINGLE, size: 4, color: "000000" },
+              bottom: { style: BorderStyle.SINGLE, size: 4, color: "000000" },
+              left: { style: BorderStyle.SINGLE, size: 4, color: "000000" },
+              right: { style: BorderStyle.SINGLE, size: 4, color: "000000" },
+            },
+            children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: "HOẠT ĐỘNG CỦA HỌC SINH", bold: true, color: "000000", font, size: baseSize })] })]
+          }),
         ],
       }),
     ];
 
-    plan.activities.forEach((act) => {
+    plan.activities.forEach((act, actIdx) => {
+      const isFirst = actIdx === 0;
+      const isLast = actIdx === plan.activities.length - 1;
       const teacherParagraphs: Paragraph[] = [
         new Paragraph({
-          spacing: { after: 30 },
-          children: [new TextRun({ text: normalizeActivityName(act.name), bold: true, color: "1E40AF", font, size: baseSize })],
+          spacing: { before: isFirst ? 20 : 100, after: 20 },
+          children: [new TextRun({ text: normalizeActivityName(act.name), bold: true, color: "000000", font, size: baseSize })],
         }),
         ...createActivityCellParagraphs(act.teacherActivity, font, baseSize)
       ];
 
       const studentParagraphs: Paragraph[] = [
+        ...(isFirst ? [] : [new Paragraph({ spacing: { before: 100 } })]),
         ...createActivityCellParagraphs(act.studentActivity, font, baseSize)
       ];
 
       activityRows.push(
         new TableRow({
+          cantSplit: false,
           children: [
             new TableCell({
               width: { size: colHalfWidth, type: WidthType.DXA },
+              borders: {
+                top: { style: BorderStyle.NONE },
+                bottom: isLast ? { style: BorderStyle.SINGLE, size: 4, color: "000000" } : { style: BorderStyle.NONE },
+                left: { style: BorderStyle.SINGLE, size: 4, color: "000000" },
+                right: { style: BorderStyle.SINGLE, size: 4, color: "000000" },
+              },
               children: teacherParagraphs,
             }),
             new TableCell({
               width: { size: colHalfWidth, type: WidthType.DXA },
+              borders: {
+                top: { style: BorderStyle.NONE },
+                bottom: isLast ? { style: BorderStyle.SINGLE, size: 4, color: "000000" } : { style: BorderStyle.NONE },
+                left: { style: BorderStyle.SINGLE, size: 4, color: "000000" },
+                right: { style: BorderStyle.SINGLE, size: 4, color: "000000" },
+              },
               children: studentParagraphs,
             }),
           ],
@@ -2271,7 +2339,20 @@ export async function exportCombinedAllInOneDocx(
       );
     });
 
-    docChildren.push(new Table({ width: { size: tableWidth, type: WidthType.DXA }, rows: activityRows }));
+    docChildren.push(
+      new Table({
+        width: { size: tableWidth, type: WidthType.DXA },
+        borders: {
+          top: { style: BorderStyle.SINGLE, size: 4, color: "000000" },
+          bottom: { style: BorderStyle.SINGLE, size: 4, color: "000000" },
+          left: { style: BorderStyle.SINGLE, size: 4, color: "000000" },
+          right: { style: BorderStyle.SINGLE, size: 4, color: "000000" },
+          insideVertical: { style: BorderStyle.SINGLE, size: 4, color: "000000" },
+          insideHorizontal: { style: BorderStyle.NONE },
+        },
+        rows: activityRows,
+      })
+    );
 
     // IV. Điều chỉnh
     docChildren.push(new Paragraph({ text: "", spacing: { before: 60 } }));
@@ -2809,42 +2890,91 @@ export async function exportWeeklyKHBDWithLBGFirstPageDocx(
         }
       }
 
-      // III. Các hoạt động dạy học chủ yếu (Bảng 2 cột CV 2345)
+      // III. Các hoạt động dạy học chủ yếu (Bảng 2 cột CV 2345 chuẩn Tuần 5 - không đóng khung riêng từng hoạt động)
       docChildren.push(new Paragraph({ text: "", spacing: { before: 60 } }));
-      docChildren.push(new Paragraph({ children: [new TextRun({ text: "III. CÁC HOẠT ĐỘNG DẠY HỌC CHỦ YẾU", bold: true, font, size: baseSize })] }));
+      docChildren.push(
+        new Paragraph({
+          children: [new TextRun({ text: "III. CÁC HOẠT ĐỘNG DẠY HỌC CHỦ YẾU", bold: true, color: "000000", font, size: baseSize })],
+        })
+      );
 
       const activityRows: TableRow[] = [
         new TableRow({
           tableHeader: true,
+          cantSplit: false,
           children: [
-            new TableCell({ width: { size: colHalfWidth, type: WidthType.DXA }, shading: { fill: "1E3A8A" }, children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: "HOẠT ĐỘNG CỦA GIÁO VIÊN", bold: true, color: "FFFFFF", font, size: baseSize })] })] }),
-            new TableCell({ width: { size: colHalfWidth, type: WidthType.DXA }, shading: { fill: "1E3A8A" }, children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: "HOẠT ĐỘNG CỦA HỌC SINH", bold: true, color: "FFFFFF", font, size: baseSize })] })] }),
+            new TableCell({
+              width: { size: colHalfWidth, type: WidthType.DXA },
+              borders: {
+                top: { style: BorderStyle.SINGLE, size: 4, color: "000000" },
+                bottom: { style: BorderStyle.SINGLE, size: 4, color: "000000" },
+                left: { style: BorderStyle.SINGLE, size: 4, color: "000000" },
+                right: { style: BorderStyle.SINGLE, size: 4, color: "000000" },
+              },
+              children: [
+                new Paragraph({
+                  alignment: AlignmentType.CENTER,
+                  children: [new TextRun({ text: "HOẠT ĐỘNG CỦA GIÁO VIÊN", bold: true, color: "000000", font, size: baseSize })],
+                }),
+              ],
+            }),
+            new TableCell({
+              width: { size: colHalfWidth, type: WidthType.DXA },
+              borders: {
+                top: { style: BorderStyle.SINGLE, size: 4, color: "000000" },
+                bottom: { style: BorderStyle.SINGLE, size: 4, color: "000000" },
+                left: { style: BorderStyle.SINGLE, size: 4, color: "000000" },
+                right: { style: BorderStyle.SINGLE, size: 4, color: "000000" },
+              },
+              children: [
+                new Paragraph({
+                  alignment: AlignmentType.CENTER,
+                  children: [new TextRun({ text: "HOẠT ĐỘNG CỦA HỌC SINH", bold: true, color: "000000", font, size: baseSize })],
+                }),
+              ],
+            }),
           ],
         }),
       ];
 
-      plan.activities.forEach((act) => {
+      plan.activities.forEach((act, actIdx) => {
+        const isFirst = actIdx === 0;
+        const isLast = actIdx === plan.activities.length - 1;
         const teacherParagraphs: Paragraph[] = [
           new Paragraph({
-            spacing: { after: 30 },
-            children: [new TextRun({ text: normalizeActivityName(act.name), bold: true, color: "1E40AF", font, size: baseSize })],
+            spacing: { before: isFirst ? 20 : 100, after: 20 },
+            children: [new TextRun({ text: normalizeActivityName(act.name), bold: true, color: "000000", font, size: baseSize })],
           }),
-          ...createActivityCellParagraphs(act.teacherActivity, font, baseSize)
+          ...createActivityCellParagraphs(act.teacherActivity, font, baseSize),
         ];
 
         const studentParagraphs: Paragraph[] = [
-          ...createActivityCellParagraphs(act.studentActivity, font, baseSize)
+          ...(isFirst ? [] : [new Paragraph({ spacing: { before: 100 } })]),
+          ...createActivityCellParagraphs(act.studentActivity, font, baseSize),
         ];
 
         activityRows.push(
           new TableRow({
+            cantSplit: false,
             children: [
               new TableCell({
                 width: { size: colHalfWidth, type: WidthType.DXA },
+                borders: {
+                  top: { style: BorderStyle.NONE },
+                  bottom: isLast ? { style: BorderStyle.SINGLE, size: 4, color: "000000" } : { style: BorderStyle.NONE },
+                  left: { style: BorderStyle.SINGLE, size: 4, color: "000000" },
+                  right: { style: BorderStyle.SINGLE, size: 4, color: "000000" },
+                },
                 children: teacherParagraphs,
               }),
               new TableCell({
                 width: { size: colHalfWidth, type: WidthType.DXA },
+                borders: {
+                  top: { style: BorderStyle.NONE },
+                  bottom: isLast ? { style: BorderStyle.SINGLE, size: 4, color: "000000" } : { style: BorderStyle.NONE },
+                  left: { style: BorderStyle.SINGLE, size: 4, color: "000000" },
+                  right: { style: BorderStyle.SINGLE, size: 4, color: "000000" },
+                },
                 children: studentParagraphs,
               }),
             ],
@@ -2852,7 +2982,20 @@ export async function exportWeeklyKHBDWithLBGFirstPageDocx(
         );
       });
 
-      docChildren.push(new Table({ width: { size: tableWidth, type: WidthType.DXA }, rows: activityRows }));
+      docChildren.push(
+        new Table({
+          width: { size: tableWidth, type: WidthType.DXA },
+          borders: {
+            top: { style: BorderStyle.SINGLE, size: 4, color: "000000" },
+            bottom: { style: BorderStyle.SINGLE, size: 4, color: "000000" },
+            left: { style: BorderStyle.SINGLE, size: 4, color: "000000" },
+            right: { style: BorderStyle.SINGLE, size: 4, color: "000000" },
+            insideVertical: { style: BorderStyle.SINGLE, size: 4, color: "000000" },
+            insideHorizontal: { style: BorderStyle.NONE },
+          },
+          rows: activityRows,
+        })
+      );
 
       // IV. Điều chỉnh sau bài dạy
       docChildren.push(new Paragraph({ text: "", spacing: { before: 60 } }));
