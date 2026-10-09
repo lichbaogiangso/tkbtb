@@ -902,7 +902,11 @@ export function generateFullWeekLessonPlans(
         teacher: cleanMaterialsList(teacherMaterials, "teacher", item.subject, finalLessonTitle, itemGrade),
         student: cleanMaterialsList(studentMaterials, "student", item.subject, finalLessonTitle, itemGrade),
       },
-      activities: [
+      activities: detailedRes?.activities ? detailedRes.activities.map((a: any) => ({
+        ...a,
+        name: normalizeActivityName(a.name),
+        objective: "",
+      })) : [
         {
           name: englishDetail ? "1. Hoạt động mở đầu (Warm-up)" : "1. Hoạt động mở đầu",
           objective: "",

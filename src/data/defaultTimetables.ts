@@ -573,51 +573,6 @@ export function generateScheduleForClass(
         if (item) items.push(item);
       }
     }
-
-    // Bổ sung đồng bộ LBG và KHBD: Phòng ngừa và giảm nhẹ rủi ro thảm họa
-    // Thực hiện vào ngày Thứ Sáu hàng tuần trước tiết HĐTN (SHL), bắt đầu từ Tuần thứ 6
-    if (day === "Thứ Sáu" && isDisasterCurriculumActive(week)) {
-      const dLesson = getDisasterLessonForWeek(week);
-      if (dLesson) {
-        const alreadyHasDisaster = items.some(
-          (it) => it.day === "Thứ Sáu" && (it.subject.includes("THẢM HỌA") || it.subject.includes("RỦI RO"))
-        );
-        if (!alreadyHasDisaster) {
-          const shlIdx = items.findIndex(
-            (it) => it.day === "Thứ Sáu" && it.session === "Sáng" && (
-              it.lessonTitle.toLowerCase().includes("shl") ||
-              it.lessonTitle.toLowerCase().includes("sinh hoạt lớp") ||
-              it.subject.toLowerCase().includes("shl") ||
-              it.subSubject?.toLowerCase().includes("sinh hoạt lớp")
-            )
-          );
-          if (shlIdx !== -1) {
-            const shlItem = items[shlIdx];
-            const disasterPeriod = shlItem.period; // Tiết ngay trước SHL
-            shlItem.period = disasterPeriod + 1; // Đẩy tiết SHL ra sau
-
-            const disasterItem: ScheduleItem = {
-              id: `item-friday-disaster-${targetClass}-${week}`,
-              day: "Thứ Sáu",
-              dateStr: dates[dIdx],
-              session: "Sáng",
-              period: disasterPeriod,
-              subject: DISASTER_SUBJECT_TITLE,
-              subSubject: "Kĩ năng phòng chống thiên tai",
-              curriculumPeriod: dLesson.lessonNumber,
-              lessonTitle: dLesson.title,
-              integrationNotes: DISASTER_INTEGRATION_NOTE,
-              note: "Tài liệu GNRRTH Tân Thạnh",
-              teacherName: teacherName,
-              className: targetClass,
-              isSpecialistPeriod: false,
-            };
-
-            items.splice(shlIdx, 0, disasterItem);
-          }
-        }
-      }
-    }
   });
 
   return items;
@@ -888,7 +843,18 @@ export function mapRawSubjectToScheduleItem(
     subSubject = "Sinh hoạt dưới cờ";
     if (!note) note = "Chào cờ đầu tuần";
     curriculumPeriod = (week - 1) * 3 + 1;
-    if (week === 3) {
+    if (isDisasterCurriculumActive(week)) {
+      const dLesson = getDisasterLessonForWeek(week);
+      if (dLesson) {
+        lessonTitle = `HĐTN - SHDC: Chào cờ tuần ${week} (Tích hợp 15 phút: ${dLesson.title})`;
+        integrationNotes = `Tích hợp Phòng ngừa và giảm nhẹ rủi ro thảm họa (15 phút): ${dLesson.title} (UBND xã Tân Thạnh - Trường TH Tân Thạnh)`;
+        note = "Tích hợp GNRRTH 15 phút";
+      } else {
+        const info = getGradeCurriculumLesson(gradeNum, "hoạt động trải nghiệm", week, 1);
+        lessonTitle = `HĐTN - SHDC: ${info.lessonTitle.replace(/^(sinh hoạt dưới cờ|shdc)[:–-]?\s*/i, "").trim()}`;
+        integrationNotes = "Tích hợp QCN, KNS, Giáo dục truyền thống";
+      }
+    } else if (week === 3) {
       if (gradeNum === 5) {
         lessonTitle = "HĐTN - SHDC: NIỀM VUI NHÂN ĐÔI, NỖI BUỒN CHIA NỬA";
       } else if (gradeNum !== 1) {
@@ -897,11 +863,12 @@ export function mapRawSubjectToScheduleItem(
         const info = getGradeCurriculumLesson(gradeNum, "hoạt động trải nghiệm", week, 1);
         lessonTitle = `HĐTN - SHDC: ${info.lessonTitle.replace(/^(sinh hoạt dưới cờ|shdc)[:–-]?\s*/i, "").trim()}`;
       }
+      integrationNotes = "Tích hợp QCN, KNS, Giáo dục truyền thống";
     } else {
       const info = getGradeCurriculumLesson(gradeNum, "hoạt động trải nghiệm", week, 1);
       lessonTitle = `HĐTN - SHDC: ${info.lessonTitle.replace(/^(sinh hoạt dưới cờ|shdc)[:–-]?\s*/i, "").trim()}`;
+      integrationNotes = "Tích hợp QCN, KNS, Giáo dục truyền thống";
     }
-    integrationNotes = "Tích hợp QCN, KNS, Giáo dục truyền thống";
   } 
   // 8b. Sinh hoạt lớp (Tích hợp An toàn giao thông theo mẫu mới của Bộ GD&ĐT)
   else if (

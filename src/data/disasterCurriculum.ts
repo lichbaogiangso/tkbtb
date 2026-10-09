@@ -44,11 +44,11 @@ export const DISASTER_CURRICULUM_DATA: DisasterLesson[] = [
       "Trách nhiệm: Có ý thức chủ động học tập kỹ năng phòng chống rủi ro, bảo vệ an toàn cho bản thân và gia đình."
     ],
     teacherMaterials: [
-      "Hình ảnh minh họa các loại hiểm họa thiên nhiên (bão, lũ, sạt lở, dông sét) và hình ảnh thảm họa.",
-      "Video clip giáo dục kỹ năng nhận diện rủi ro thiên tai; phiếu bài tập phân loại tình huống."
+      "Hình ảnh minh họa các loại hiểm họa thiên nhiên (bão, lũ, sạt lở, dông sét) và hình ảnh thảm họa thực tế.",
+      "Video clip giáo dục kỹ năng nhận diện rủi ro thiên tai tại địa phương, bảng tình huống phân loại hiểm họa."
     ],
     studentMaterials: [
-      "Giấy A4, bút màu, sổ tay ghi chép an toàn thiên tai."
+      "Sổ tay ghi chép an toàn thiên tai, thông tin quan sát thực tế về tình hình mưa lũ tại địa phương Tân Thạnh."
     ],
     activities: [
       {
@@ -140,10 +140,10 @@ export const DISASTER_CURRICULUM_DATA: DisasterLesson[] = [
       "Trung thực, Trách nhiệm: Chấp hành nghiêm quy định an toàn mùa mưa lũ, tuyệt đối không tự ý đi lội nước, bơi lội hay đánh bắt cá khi có lũ."
     ],
     teacherMaterials: [
-      "Video clip/tranh ảnh về cảnh lũ lụt, mô hình nhà sàn/gác xép, phao cứu sinh, áo phao, còi cứu hộ."
+      "Video clip/tranh ảnh về cảnh lũ lụt, mô hình nhà sàn/gác xép chống lũ, phao cứu sinh, áo phao, còi cứu hộ."
     ],
     studentMaterials: [
-      "Giấy A4, bút màu, còi cứu hộ cá nhân (nếu có)."
+      "Sổ tay ghi chép an toàn mùa mưa lũ, còi cứu hộ cá nhân (nếu có)."
     ],
     activities: [
       {
@@ -232,7 +232,7 @@ export const DISASTER_CURRICULUM_DATA: DisasterLesson[] = [
       "Bản đồ bão, tranh ảnh chằng chống nhà bằng bao cát/dây cáp, video mô phỏng sức tàn phá của gió bão, mẫu túi cứu hộ khẩn cấp."
     ],
     studentMaterials: [
-      "Giấy A4, bút màu, sổ tay ghi chép an toàn."
+      "Sổ tay ghi chép an toàn thiên tai, danh mục đồ dùng cứu hộ khẩn cấp của gia đình."
     ],
     activities: [
       {
@@ -309,7 +309,7 @@ export const DISASTER_CURRICULUM_DATA: DisasterLesson[] = [
       "Video clip thực tế về vụ sạt lở đất đồi núi và bờ sông, tranh vẽ các dấu hiệu cảnh báo sạt lở đất, sơ đồ hướng thoát hiểm."
     ],
     studentMaterials: [
-      "Giấy A4, bút màu, thước kẻ."
+      "Sổ tay ghi chép các điểm xung yếu bờ kênh rạch tại địa phương có nguy cơ sạt lở."
     ],
     activities: [
       {
@@ -390,7 +390,7 @@ export const DISASTER_CURRICULUM_DATA: DisasterLesson[] = [
       "Tranh ảnh ruộng đồng nứt nẻ, sông hồ cạn đáy, cây cối héo khô, poster/tranh tuyên truyền tiết kiệm nước."
     ],
     studentMaterials: [
-      "Giấy A4, bút màu, sổ tay ghi chép."
+      "Sổ tay ghi chép nhật ký tiết kiệm nước tại gia đình và trường học."
     ],
     activities: [
       {
@@ -554,10 +554,10 @@ export const DISASTER_CURRICULUM_DATA: DisasterLesson[] = [
       "Yêu nước, Trách nhiệm: Có ý thức bảo vệ môi trường sống, tài nguyên thiên nhiên quê hương đất nước."
     ],
     teacherMaterials: [
-      "Tranh đối lập: Một bên là rừng bị tàn phá/sông ô nhiễm rác thải; một bên là rừng phủ xanh tươi/dòng sông sạch; bộ thẻ hành vi ĐÚNG - SAI."
+      "Tranh ảnh đối lập: Một bên là rừng bị tàn phá/sông ô nhiễm rác thải; một bên là rừng phủ xanh tươi/dòng sông sạch; bảng phân tích hành vi ĐÚNG - SAI."
     ],
     studentMaterials: [
-      "Giấy A4, bút màu, sổ tay ghi chép."
+      "Kế hoạch hành động xanh: trồng cây, không xả rác xuống kênh rạch tại địa phương."
     ],
     activities: [
       {
